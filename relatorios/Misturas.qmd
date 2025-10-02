@@ -1,0 +1,47 @@
+---
+title: "Misturas Finitas"
+author: "Milena Paz Freitas"
+format: html
+editor: source
+lang: "pt-BR"
+self-contained: true
+bibliography: "ref.bib"
+csl: "abnt.csl"
+html-math-method: katex
+theme: sandstone
+---
+
+## 1. Definição
+
+De acordo com @everitt2013, misturas de densidades podem ser difinidas da seguinte forma:
+
+::: {.callout-note appearance="minimal"}
+Seja $g(\bm{x};\bm{ \theta})$ uma função densidade de probabilidade d-dimensional, $\bm{\theta}$ um vetor de parâmetros m-dimensional e $H(\bm{\theta})$ uma função distribuição acumulada m-dimensional. Então:
+
+$$
+f(\bm{x})= \int g(\bm{x};\bm{\theta}) dH(\bm{\theta})
+$$
+
+é chamada de densidade mistura.
+
+:::
+
+No caso de $H$ possuir distribuição discreta finita, temos que $f$ pode ser reescrita em forma de somatório, como descrito por Rodrigo Basso [-@basso2010misturas]:
+
+$$
+  f(\bm{x}) = \sum^n_{i=1}\omega_ig_i(\bm{x}),\quad0 \leq \omega_i \leq 1\quad \text{e  } \sum^n_{i=1}\omega_i =1  
+$$
+
+Temos que $f(\bm{x})$ é uma mistura de densidades finita com n componentes, $\omega_i$ são as proporções (ou pesos) de mistura e $g_i$ são as componentes. No caso das densidades $g_i$ pertencerem à mesma família paramétrica com $\bm{\theta_i}\in\Theta$, podemos denotá-las como $g_i(\bm{x}|\bm{\theta_i})$.
+
+::: {.callout-note appearance="minimal"}
+É importante notar que componentes de misturas não são necessariamente contínuas, existem misturas de componentes Bernoulli, Poisson, etc.
+:::
+
+## 2. Exemplos
+
+### Misturas Normais (Gaussianas)
+
+Chamamos de misturas normais aquelas que são compostas apenas por densidades da família normal, com $\bm{\theta_i}=(\mu_i,\sigma_i)^\top$, onde $\mu \in \mathbb{R}$ e $\sigma >0$
+
+## 3. Gerando amostras de misturas finitas
