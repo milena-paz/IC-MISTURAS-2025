@@ -9,6 +9,7 @@ bibliography: "ref.bib"
 csl: "abnt.csl"
 html-math-method: katex
 theme: sandstone
+table-of-contents: true
 ---
 
 ## 1. Definição
@@ -40,8 +41,265 @@ Temos que $f(\bm{x})$ é uma mistura de densidades finita com n componentes, $\o
 
 ## 2. Exemplos
 
-### Misturas Normais (Gaussianas)
+### 2.1 Misturas normais (Gaussianas)
 
-Chamamos de misturas normais aquelas que são compostas apenas por densidades da família normal, com $\bm{\theta_i}=(\mu_i,\sigma_i)^\top$, onde $\mu \in \mathbb{R}$ e $\sigma >0$
+Chamamos de misturas normais aquelas que são compostas apenas por densidades da família normal, com $\bm{\theta_i}=(\mu_i,\sigma_i)^\top$, onde $\mu \in \mathbb{R}$ e $\sigma >0$. Interpretando a distribuição dos "pesos" como uma variável categórica que separa as componentes em grupos, podemos modelar muitos fenômenos reais por meio de misturas normais.
+
+Alguns exemplos de misturas e seus gráficos:
+
+a. $0.51\mathcal{N}(160, 15) + 0.49\mathcal{N}(173, 12)$
+
+```{r}
+#| code-fold: true
+#| fig-align: center
+curve(.51*dnorm(x,160,sqrt(15))+.49*dnorm(x,173,sqrt(12)),
+      main= "Mistura a",ylab="densidade",
+      from=150,to=190,lwd=2)
+```
+
+Essa distribuição é inspirada nas alturas dos brasileiros, com a média de alturas femininas sendo menor que das masculinas e os pesos sendo aproximadamente iguais; ou seja, o sexo seria a categoria dividindo os grupos. Este gráfico apresenta dois picos, caracterizando-o como bimodal.
+
+b.  $\displaystyle{\sum_{k=0}^7 \frac{1}{8} \mathcal{N}\left( 3\left[ \left(\frac{2}{3}\right)^k -1\right], \left(\frac{2}{3}\right)^{2k} \right)}$
+
+Para implementar essa mistura no R, foi conveniente criar a seguinte função por conta do grande número de componentes:
+
+```{r}
+dMisturaNorm <- function(x,mi,dp,probs){
+  #---------------------------------------#
+  # x: vetor de valores a serem avaliados #
+  # mi: vetor de médias                   #
+  # dp: vetor de desvios padrão           #
+  # probs: vetor de pesos das componentes #
+  #---------------------------------------#
+  n <- length(mi)
+  if(length(x)==1)
+    #caso especial, quando x não é vetor
+    return(sum(probs*dnorm(x,mi,dp)))
+  return(rowSums(sapply(1:n,function(k) probs[k]*dnorm(x,mi[k],dp[k]))))
+}
+```
+
+```{r}
+#| fig-align: center
+#| code-fold: true
+#implementação da mistura:
+mi <- 3*( (2/3)^(0:7) - 1)
+vars <- (2/3)^(2*(0:7))
+pesos <- rep(1/8,8)
+
+curve(dMisturaNorm(x,mi,sqrt(vars),pesos),
+      main= "Mistura b",ylab="densidade",
+      from=-3.5,to=1,lwd=2)
+```
+
+É uma densidade altamente assimétrica à direita, desassemelha-se muito de uma aparência normal.
+
+### 2.2. Misturas discretas
+
+Além das misturas de densidades, é possível elaborar misturas de distribuições discretas, como Geométricas, Poisson, Binomiais, etc. Seguem exemplos de algumas:
+
+c. $$f_X(j)=P(X=j)= \left( \frac{1}{2} \right)^{j+1} 
+    +\frac{\left( \frac{1}{2} \right)2^{j-1}}{3^j},\quad j=1,2,...$$
+
+Podemos observar que essa função de probabilidade é a mistura de duas geométricas:
+
+$\frac{1}{2}\text{Geom}(1/2)+ \frac{1}{2}\text{Geom}(1/3)$
+
+```{r}
+#| fig-align: center
+# note que foi usado o valor de x-1, pois a parametrização do R difere da minha
+x<- 1:50
+plot(.5*dgeom(x-1,1/2)+.5*dgeom(x-1,1/3),
+    type="o",pch=".",cex=4,
+    main= "Mistura c",ylab="densidade",xlab="x",lwd=2)
+```
+
+d. $0.15\text{Pois}(3) + 0.75\text{Pois}(10) + 0.1\text{Pois}(1.5)$
+
+```{r}
+#| fig-align: center
+x<- 1:40
+plot(.15*dpois(x,3)+.75*dpois(x,10)+.1*dpois(x,1.5),
+     type="o",pch=".",cex=4,
+     main= "Mistura d",ylab="densidade",xlab="x",lwd=2)
+```
+
+### 2.3. Misturas de diferentes famílias paramétricas
+
+Como visto na definição, são possíveis misturas de diferentes famílias paramétricas, como a que segue:
+
+e. $0.4 \text{U}(0,1) + 0.6\text{Beta}(4,6)$
+
+```{r}
+#| fig-align: center
+curve(0.4*dunif(x)+0.6*dbeta(x,2,6),
+      main= "Mistura e",ylab="densidade",
+      lwd=2,ylim=c(0,2.1))
+```
+
+Essa mistura visualmente se assemelha à densidade da Beta, mas "levantada" por conta da Uniforme.
 
 ## 3. Gerando amostras de misturas finitas
+
+Para gerar misturas, são dois passos:
+
+- Gerar números que definirão qual componente será gerada.
+
+  * Isso pode ser feito gerando números uniformemente de 0 a 1 e, de acordo com sua posição no intervalo (tomando como referência a soma cumulativa dos pesos $\omega$), definir qual componente gerar.
+  
+  * Alternativamente, pode ser gerada uma multinomial com os pesos de parâmetro.
+
+- Gerar a componente correspondente a cada número gerado.
+
+### 3.1 Implementação
+
+Como exemplo serão usadas as misturas *a* e *b* da subseção 2.1 para geração.
+
+#### Método I)
+
+O primeiro passo será feito usando geração de números $\text U (0,1)$, como segue:
+
+```{r}
+rMisturaNorm <- function(n,mi,dp,probs){
+  k<- length(mi)
+  X<- numeric(n)
+  U <- runif(n)
+  p <- cumsum(c(0,probs))
+  for(i in 1:k){
+    caso <- U <= p[i+1] & U> p[i]
+    tam <- sum(caso)
+    X[caso] <- rnorm(tam,mi[i],dp[i])
+  }
+  return(X)
+}#Fim função geradora
+```
+
+* **Mistura a:**
+
+$$0.51\mathcal{N}(160, 15) + 0.49\mathcal{N}(173, 12)$$
+
+```{r}
+n <- 200
+mi <- c(160,173)
+dp <- sqrt(c(15,12))
+pesos <- c(.51,0.49)
+
+X1 <- rMisturaNorm(n,mi,dp,pesos)
+```
+
+Histograma e comparação com a densidade:
+
+```{r}
+#| code-fold: true
+#| fig-align: center
+hist(X1, freq=F, breaks=20,col="orange",border="white",main="Histograma da amostra X1")
+curve(dMisturaNorm(x,mi,dp,pesos),
+      add=T,col="darkblue",lty=2,lwd=2)
+```
+
+* **Mistura b:**
+
+$$\sum_{k=0}^7 \frac{1}{8} \mathcal{N}\left( 3\left[ \left(\frac{2}{3}\right)^k -1\right], \left(\frac{2}{3}\right)^{2k} \right)$$
+
+```{r}
+mi <- 3*( (2/3)^(0:7) - 1)
+dp <- sqrt((2/3)^(2*(0:7)))
+pesos <- rep(1/8,8)
+
+X2 <- rMisturaNorm(n, mi, dp, pesos)
+```
+
+Histograma e comparação com a densidade:
+
+```{r}
+#| fig-align: center
+#| code-fold: true
+hist(X2, freq=F, breaks=20,col="orange",border="white",main="Histograma da amostra X2")
+curve(dMisturaNorm(x,mi,dp,pesos),
+      add=T,col="darkblue",lty=2,lwd=2)
+```
+
+#### Método II)
+
+Agora o mesmo processo será feito usando uma multinomial no lugar da uniforme:
+
+```{r}
+rMisturaNormAlt <- function(n,mi,dp,probs){
+  k<- length(mi)
+  X<- numeric(n)
+  tam <- as.vector(rmultinom(1,n,probs))
+  lims <- cumsum(c(0,tam))
+  for(i in 1:k){
+    X[(lims[i]+1):lims[i+1]] <- rnorm(tam[i],mi[i],dp[i])
+  }
+  return(X)
+}#Fim função geradora
+```
+
+* **Mistura a:**
+
+```{r}
+n <- 200
+mi <- c(160,173)
+dp <- sqrt(c(15,12))
+pesos <- c(.51,0.49)
+
+X3 <- rMisturaNormAlt(n,mi,dp,pesos)
+```
+
+Histograma e comparação com a densidade:
+
+```{r}
+#| fig-align: center
+#| code-fold: true
+hist(X3, freq=F, breaks=20,col="orange",border="white",main="Histograma da amostra X3")
+curve(dMisturaNorm(x,mi,dp,pesos),
+      add=T,col="darkblue",lty=2,lwd=2)
+```
+
+* **Mistura b:**
+
+```{r}
+mi <- 3*( (2/3)^(0:7) - 1)
+dp <- sqrt((2/3)^(2*(0:7)))
+pesos <- rep(1/8,8)
+
+X4 <- rMisturaNormAlt(n, mi, dp, pesos)
+```
+
+Histograma e comparação com a densidade:
+
+```{r}
+#| fig-align: center
+#| code-fold: true
+hist(X4, freq=F, breaks=20,col="orange",border="white",main="Histograma da amostra X4")
+curve(dMisturaNorm(x,mi,dp,pesos),
+      add=T,col="darkblue",lty=2,lwd=2)
+```
+
+Os mesmos gráficos, dispostos lado a lado:
+
+```{r}
+#| fig-align: center
+#| code-fold: true
+par(mfrow=c(2,2),mar=c(3.1,2.1,2,1))
+amostras <- list(X1,X2,X3,X4)
+for(i in 1:4){
+  hist(amostras[[i]], freq=F, breaks=20,
+       col="orange",border="white",main=paste0("Histograma da amostra X",i))
+  if(i%%2==0){
+    mi <- 3*( (2/3)^(0:7) - 1)
+    dp <- sqrt((2/3)^(2*(0:7)))
+    pesos <- rep(1/8,8)
+  }
+  else{
+    mi <- c(160,173)
+    dp <- sqrt(c(15,12))
+    pesos <- c(.51,0.49)
+  }
+  curve(dMisturaNorm(x,mi,dp,pesos),
+      add=T,col="darkblue",lty=2,lwd=2)
+}
+```
+
+## Referências
