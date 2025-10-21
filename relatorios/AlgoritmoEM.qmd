@@ -1,0 +1,37 @@
+---
+title: "O Algoritmo EM"
+author: "Milena Paz"
+format: html
+lang: pt-BR
+self-contained: true
+editor: source
+html-math-method: katex
+bibliography: "ref.bib"
+toc: true
+csl: abnt.csl
+nocite: |
+        @mclachlan2008
+---
+
+# 1. Introdução
+
+O algoritmo EM é um entre vários métodos de cálculo iterativo da estimativa de máxima verossimilhança. Consiste em dois passos: o passo E (esperança) e o passo M (maximização). Um artigo de extrema importância para o desenvolvivemento e disseminação desse algoritmo foi de @dempster1977, onde foi consolidado como *"the EM algorithm"*.
+
+A seguir serão listados dois outros algoritmos iterativos, com o propósito de realizar uma comparação com o EM:
+
+### 1.1. Newton-Raphson
+
+Sejam $\bm y$ vetor dos dados observados e $\bm \theta$ vetor dos parâmetros populacionais, o método de estimativa de máxima verossimilhança de $\bm \theta$ por algoritmo Newton-Raphson busca solucionar a seguinte equação:
+
+$$
+\bm{S}(\bm{\theta}|\bm{y})=\bm{0} \quad,
+$$
+onde $\bm S$ é a função escore (vetor gradiente da função de log-verossimilhança $l(\bm{\theta})$).
+
+Dessa forma, dado um critério de parada, uma constante (pequena) $\varepsilon$ e valores iniciais $\hat{\bm \theta}^{(0)}$, realiza-se o seguinte:
+
+1) Calcula-se o(s) próximo(s) valor(es): $\hat{\bm \theta}^{(k+1)}=\hat{\bm \theta}^{(k)} - H^{-1}(\bm \theta)\bm{S}(\bm{\theta})$, onde $H(\bm \theta)$ é a matriz Hessiana (ou seja, matriz das derivadas parciais segundas) de $l(\bm{\theta})$.
+
+2) Verifica-se se o critério de parada, por exemplo, se $|\hat{\theta}^{(k+1)}-\hat{\theta}^{(k)}|\leq \varepsilon$ (caso univariado). Caso seja falso, retorna-se ao passo 1.
+
+É importante notar que, no caso de $l(\bm{\theta})$ ser multimodal e  dependendo do valor inicial, o algoritmo pode convergir em um valor máximo local em vez de um máximo global. Além disso, o custo computacional deste método aumenta grandemente quanto maior o número de parâmetros for.
