@@ -3,8 +3,11 @@ title: "O Algoritmo EM"
 author: "Milena Paz"
 format: html
 lang: pt-BR
-self-contained: true
+title-block-banner: true
+title-block-style: manuscript
+embed-resources: true
 editor: source
+theme: sandstone
 html-math-method: katex
 bibliography: "ref.bib"
 toc: true
@@ -30,8 +33,84 @@ onde $\bm S$ é a função escore (vetor gradiente da função de log-verossimil
 
 Dessa forma, dado um critério de parada, uma constante (pequena) $\varepsilon$ e valores iniciais $\hat{\bm \theta}^{(0)}$, realiza-se o seguinte:
 
-1) Calcula-se o(s) próximo(s) valor(es): $\hat{\bm \theta}^{(k+1)}=\hat{\bm \theta}^{(k)} - H^{-1}(\bm \theta)\bm{S}(\bm{\theta})$, onde $H(\bm \theta)$ é a matriz Hessiana (ou seja, matriz das derivadas parciais segundas) de $l(\bm{\theta})$.
+::: {.callout-note appearance="minimal"}
+1) Calcula-se o(s) próximo(s) valor(es):
+$$\hat{\bm \theta}^{(k+1)}=\hat{\bm \theta}^{(k)} - H^{-1}(\hat{\bm \theta}^{(k)})\bm{S}(\hat{\bm{\theta}}^{(k)}),$$
+onde $H(\bm \theta)$ é a matriz Hessiana (ou seja, matriz das derivadas parciais segundas) de $l(\bm{\theta})$.
 
-2) Verifica-se se o critério de parada, por exemplo, se $|\hat{\theta}^{(k+1)}-\hat{\theta}^{(k)}|\leq \varepsilon$ (caso univariado). Caso seja falso, retorna-se ao passo 1.
+2) Verifica-se se o critério de parada; por exemplo, se $|\hat{\theta}^{(k+1)}-\hat{\theta}^{(k)}|\leq \varepsilon$ (caso univariado). Caso seja falso, retorna-se ao passo 1.
+:::
 
 É importante notar que, no caso de $l(\bm{\theta})$ ser multimodal e  dependendo do valor inicial, o algoritmo pode convergir em um valor máximo local em vez de um máximo global. Além disso, o custo computacional deste método aumenta grandemente quanto maior o número de parâmetros for.
+
+
+## 1.2 Fisher Scoring
+
+É considerado por @mclachlan2008 como um dos métodos de Newton modificados, onde se substitui $H(\bm \theta)$ pela informação de Fisher $I(\bm \theta)=-\text{E}[H(\bm \theta)]$ (ou matriz de informação de Fisher, no caso multiparamétrico). Do mesmo ponto de partida que para o método de Newton-Raphson, temos o seguinte algoritmo:
+
+::: {.callout-note appearance="minimal"}
+1) Calcula-se o(s) próximo(s) valor(es):
+$$\hat{\bm \theta}^{(k+1)}=\hat{\bm \theta}^{(k)} + I^{-1}(\hat{\bm \theta}^{(k)})\bm{S}(\hat{\bm{\theta}}^{(k)})$$
+
+
+2) Verifica-se se o critério de parada. Caso seja falso, retorna-se ao passo 1.
+:::
+
+Muitas vezes $I(\bm \theta)$ não pode ser facilmente calculada, então usa-se a **matriz de informação empírica**:
+
+$$
+\begin{aligned}
+I_e(\hat{\bm \theta})&=  \sum^n_{i=1} \bm{s}(y_i| \hat{\bm \theta})\bm{s}^\intercal(y_i| \hat{\bm \theta})
+\\
+& =-\frac{1}{n}\bm{S}(\bm{y}| \hat{\bm \theta})\bm{S}^\intercal(\bm{y}| \hat{\bm \theta}),
+\end{aligned}
+$$
+
+onde $\bm{s}(y_i, \hat{\bm \theta})$ é a função escore baseada apenas na observação $y_i$.
+
+Essa modificação do método Newton-Raphson tem custo computacional significativamente menor que o original (usando a matriz Hessiana completa) e, usando $I_e(\hat{\bm \theta})$.
+
+# 2. O algoritmo EM
+
+É usado principalmente em casos de dados incompletos (censurados, faltantes, latentes, etc), porém **não é restrito** a esses casos. Define-se:
+
+i. Seja $\bm{Y_{ob}}$ o vetor aleatório correspondente aos dados observados $\bm y$, com f.d.p. $f(\bm y|\bm \theta)$, onde $\bm \theta \in \Theta$ é seu vetor de parâmetros. $\bm{Y_c}=(\bm{Y_{ob}},\bm{Y_{ms}})$ é o vetor de dados completos, composto pelos dados observados e os dados acrescidos $\bm{Y_{ms}}$.
+
+ii. Denota-se $L(\bm{\theta}|\bm{Y_c})=f(\bm{Y_c}|\bm \theta)$ a função de verossimilhança dos dados completos e $l_c(\bm{\theta}|\bm{Y_c})=\log [L(\bm{\theta}|\bm{Y_c})]$ a log-verossimilhança dos mesmos.
+
+iii. Defina a função $Q$ como a esperança condicional da log-verossimilhança dos dados completos, dado os dados observados e a estimativa $\hat{\bm\theta}$: 
+$$
+Q(\bm \theta| \hat{\bm \theta})=
+E\left[l_c(\bm{\theta}|\bm{Y_c})|\bm{Y_{ob}},\hat{\bm \theta}\right]
+$$
+Obs.: Muitas vezes não há uma expressão fechada para que $Q$ seja maximizada aritmeticamente, o que pode ser resolvido usando métodos numéricos.
+
+Assim, o algoritmo é como segue:
+
+::: {.callout-note appearance="minimal"}
+1) **Passo E**: Calcula-se $Q(\bm \theta| \hat{\bm \theta}^{(k)})$;
+
+2) **Passo M**: Obtem-se $\hat{\bm \theta}^{(k+1)}$ que maximize a função obtida no passo anterior, tal que
+$$Q(\hat{\bm \theta}^{(k+1)}| \hat{\bm \theta}^{(k)})>Q(\bm \theta| \hat{\bm \theta}^{(k)})$$
+
+3) Verifica-se se o critério de parada. Caso seja falso, retorna-se ao passo 1.
+:::
+
+## 2.1 Exemplo
+
+### Distribuição T de Student
+
+Suponha que $T\sim t_\nu$, ou seja, $T$ seja uma variável aleatória de distribuição t-Student com $\nu$ graus de liberdade. Temos que:
+
+$$
+T=\frac{Z}{\sqrt{C/\nu}},
+$$
+
+onde $Z\sim N(0,1)$ e $C\sim \mathcal X^2_\nu$.
+
+Note que a qui-quadrado pode ser descrita como um caso particular da distribuição gama. Ou seja, se $C\sim \mathcal X^2_\nu$, então $C \sim \text{Gamma}(\nu/2,1/2)$. Logo:
+
+$$
+T=\frac{Z}{\sqrt{U}},
+$$
+onde $U\sim \text{Gamma}(\nu/2,\nu/2)$ (já tomando em conta a divisão pelos graus de liberdade).
