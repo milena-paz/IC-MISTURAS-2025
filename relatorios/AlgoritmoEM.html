@@ -6,7 +6,7 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
-<meta name="author" content="Milena Paz">
+<meta name="author" content="Milena Paz Freitas">
 
 <title>O Algoritmo EM</title>
 <style>
@@ -2253,7 +2253,7 @@ window.Quarto = {
                 <div>
             <div class="quarto-title-meta-heading">Autor</div>
             <div class="quarto-title-meta-contents">
-                        <p>Milena Paz </p>
+                        <p>Milena Paz Freitas </p>
                       </div>
           </div>
                 
@@ -2282,9 +2282,10 @@ window.Quarto = {
   </ul></li>
   <li><a href="#o-algoritmo-em" id="toc-o-algoritmo-em" class="nav-link" data-scroll-target="#o-algoritmo-em">2. O algoritmo EM</a>
   <ul class="collapse">
-  <li><a href="#exemplo" id="toc-exemplo" class="nav-link" data-scroll-target="#exemplo">2.1 Exemplo</a>
+  <li><a href="#exemplo-com-a-distribuição-t-student-locação-escala" id="toc-exemplo-com-a-distribuição-t-student-locação-escala" class="nav-link" data-scroll-target="#exemplo-com-a-distribuição-t-student-locação-escala">2.1 Exemplo com a distribuição T-student Locação-Escala</a>
   <ul class="collapse">
-  <li><a href="#distribuição-t-de-student" id="toc-distribuição-t-de-student" class="nav-link" data-scroll-target="#distribuição-t-de-student">Distribuição T de Student</a></li>
+  <li><a href="#distribuição-t-student-locação-escala" id="toc-distribuição-t-student-locação-escala" class="nav-link" data-scroll-target="#distribuição-t-student-locação-escala">Distribuição T-Student Locação-Escala</a></li>
+  <li><a href="#realizando-inferência-por-meio-do-algoritmo-em" id="toc-realizando-inferência-por-meio-do-algoritmo-em" class="nav-link" data-scroll-target="#realizando-inferência-por-meio-do-algoritmo-em">Realizando inferência por meio do Algoritmo EM</a></li>
   </ul></li>
   </ul></li>
   </ul>
@@ -2348,7 +2349,7 @@ I_e(\hat{\bm \theta})&amp;=  \sum^n_{i=1} \bm{s}(y_i| \hat{\bm \theta})\bm{s}^\i
 \end{aligned}
 </span></p>
 <p>onde <span class="math inline">\bm{s}(y_i, \hat{\bm \theta})</span> é a função escore baseada apenas na observação <span class="math inline">y_i</span>.</p>
-<p>Essa modificação do método Newton-Raphson tem custo computacional significativamente menor que o original (usando a matriz Hessiana completa) e, usando <span class="math inline">I_e(\hat{\bm \theta})</span>.</p>
+<p>Essa modificação do método Newton-Raphson tem custo computacional significativamente menor que o original (usando a matriz Hessiana completa), usando <span class="math inline">I_e(\hat{\bm \theta})</span> no lugar de <span class="math inline">I(\bm \theta)</span>.</p>
 </section>
 </section>
 <section id="o-algoritmo-em" class="level1">
@@ -2377,10 +2378,18 @@ E\left[l_c(\bm{\theta}|\bm{Y_c})|\bm{Y_{ob}},\hat{\bm \theta}\right]
 </div>
 </div>
 </div>
-<section id="exemplo" class="level2">
-<h2 class="anchored" data-anchor-id="exemplo">2.1 Exemplo</h2>
-<section id="distribuição-t-de-student" class="level3">
-<h3 class="anchored" data-anchor-id="distribuição-t-de-student">Distribuição T de Student</h3>
+<section id="exemplo-com-a-distribuição-t-student-locação-escala" class="level2">
+<h2 class="anchored" data-anchor-id="exemplo-com-a-distribuição-t-student-locação-escala">2.1 Exemplo com a distribuição T-student Locação-Escala</h2>
+<div class="callout callout-style-simple callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Distribuição T de Student
+</div>
+</div>
+<div class="callout-body-container callout-body">
 <p>Suponha que <span class="math inline">T\sim t_\nu</span>, ou seja, <span class="math inline">T</span> seja uma variável aleatória de distribuição t-Student com <span class="math inline">\nu</span> graus de liberdade. Temos que:</p>
 <p><span class="math display">
 T=\frac{Z}{\sqrt{C/\nu}},
@@ -2388,8 +2397,56 @@ T=\frac{Z}{\sqrt{C/\nu}},
 <p>onde <span class="math inline">Z\sim N(0,1)</span> e <span class="math inline">C\sim \mathcal X^2_\nu</span>.</p>
 <p>Note que a qui-quadrado pode ser descrita como um caso particular da distribuição gama. Ou seja, se <span class="math inline">C\sim \mathcal X^2_\nu</span>, então <span class="math inline">C \sim \text{Gamma}(\nu/2,1/2)</span>. Logo:</p>
 <p><span class="math display">
-T=\frac{Z}{\sqrt{U}},
-</span> onde <span class="math inline">U\sim \text{Gamma}(\nu/2,\nu/2)</span> (já tomando em conta a divisão pelos graus de liberdade).</p>
+T=\frac{Z}{\sqrt{U}}=ZU^{-1/2},
+</span> onde <span class="math inline">U\sim \text{Gamma}(\nu/2,\nu/2)</span>, já tomando em conta a operação de escala.</p>
+</div>
+</div>
+<section id="distribuição-t-student-locação-escala" class="level3">
+<h3 class="anchored" data-anchor-id="distribuição-t-student-locação-escala">Distribuição T-Student Locação-Escala</h3>
+<p>Digamos que <span class="math inline">T\sim \ell st(\mu, \sigma^2,\nu)</span>, com parâmetros de locação e escala <span class="math inline">\mu \in \mathbb R</span>, e <span class="math inline">\sigma&gt;0</span>. Sua densidade é dada por:</p>
+<p><span class="math display">
+f(t|\bm\theta)=
+\frac{\Gamma\left(\frac{\nu+1}{2}\right)}{\Gamma\left(\frac{\nu}{2}\right)\sigma\sqrt{\pi\nu}}
+\left(1+\frac{(t-\mu)^2}{\sigma^2\nu}\right)^{-(\nu+1)/2}, \quad t\in \mathbb R,
+</span></p>
+<p>onde <span class="math inline">\bm \theta = (\mu,\sigma^2,\nu)^\intercal</span>. Podendo ser reescrita como:</p>
+<p><span class="math display">
+f(t|\bm\theta)=
+\frac{k(\nu)}{\sigma}
+\left(1+\frac{d^2_M(t,\mu,\sigma^2)}{\nu}\right)^{-(\nu+1)/2},
+</span> onde <span class="math inline">d_M^2(t,\mu,\sigma^2)=\frac{(t-\mu)^2}{\sigma^2}</span> é quadrado da distância de Mahalanobis e <span class="math inline">k(\nu)=\frac{\Gamma\left(\frac{\nu+1}{2}\right)}{\Gamma\left(\frac{\nu}{2}\right)\sqrt{\pi\nu}}</span>.</p>
+<p>Além disso, se <span class="math inline">Y \sim t_\nu</span> e <span class="math inline">T=\mu +\sigma Y</span>, então <span class="math inline">T\sim \ell st(\mu,\sigma^2,\nu)</span>. Outras propriedades da distribuição são:</p>
+<ul>
+<li><p><span class="math inline">\text{E}(T)=\mu</span>, para <span class="math inline">\nu&gt;1</span>;</p></li>
+<li><p><span class="math inline">\text{Var}(T)=\sigma^2\frac{\nu}{\nu-2}</span>.</p></li>
+</ul>
+</section>
+<section id="realizando-inferência-por-meio-do-algoritmo-em" class="level3">
+<h3 class="anchored" data-anchor-id="realizando-inferência-por-meio-do-algoritmo-em">Realizando inferência por meio do Algoritmo EM</h3>
+<p>Suponha que temos uma a.a. <span class="math inline">Y_1,..,Y_n \overset{iid}{\sim} \ell st(\mu,\sigma^2,\nu)</span>, onde <span class="math inline">\nu</span> é conhecido. Logo, o vetor de parâme-tros é dado por <span class="math inline">\bm \theta=(\mu,\sigma^2)</span>. Com a intenção de obter o estimador de máxima verossimilhança para <span class="math inline">\bm \theta</span>, pode-se tentar pelo método tradicional:</p>
+<p><span class="math display">L(\bm \theta |\bm y)=f(\bm y|\bm\theta)=\left(\frac{k(\nu)}{\sqrt {\sigma^2}}\right)^n
+\prod^n_{i=1}\left(1+\frac{d^2_{Mi}}{\nu}\right)^{-(\nu+1)/2},</span></p>
+<p>onde <span class="math inline">d^2_{Mi}=d^2_M(y_i,\mu,\sigma^2)</span>.</p>
+<p><span class="math display">\Rightarrow l(\bm \theta)= n\log [k(\nu)] - \frac{n}{2}\log(\sigma^2) -\frac{\nu+1}{2}\sum^n_{i=1}log\left(1+d^2_{Mi}\nu^{-1}\right)</span></p>
+<p>Cujas funções escores são dadas por:</p>
+<p><span class="math display">
+S_1(\mu)= \frac{d}{d\mu}l(\bm \theta)=\sum^n_{i=1}\left(\frac{\nu+1}{\nu +d^2_{Mi}}\right)\frac{d_{Mi}}{\sigma}
+</span></p>
+<p><span class="math display">S_2(\sigma^2)=\frac{d}{d\sigma^2}l(\bm \theta)=-\frac{n}{2\sigma^2}+\sum^n_{i=1}\left(\frac{\nu+1}{\nu+d^2_{Mi}}\right)\frac{d^2_{Mi}}{2\sigma^2}</span></p>
+<p>Para tentar obter um estimador de máxima verossimilhança de <span class="math inline">\bm \theta</span>, tradicionalmente, deve-se solucionar o sistema de equações:</p>
+<p><span class="math display">
+\begin{cases}
+S_1(\mu)=0
+\\
+S_2(\sigma^2)=0
+\end{cases},
+</span></p>
+<p>O que seria muito difícil de se fazer sem utilizar métodos iterativos (como, por exemplo, Newton-Raph-son). Logo, podemos estimar esses parâmetros via Algoritmo EM, pensando no modelo t locação-escala da seguinte maneira:</p>
+<ul>
+<li><span class="math inline">Y_i</span> pode ser reescrito da seguinte forma: <span class="math display">
+Y_i = \mu + U^{-1/2}Z,
+</span> onde <span class="math inline">Z\sim N(0,\sigma^2)</span> e <span class="math inline">U\sim \text{Gama}(\nu/2,\nu/2)</span>.</li>
+</ul>
 
 </section>
 </section>

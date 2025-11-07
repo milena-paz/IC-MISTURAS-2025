@@ -1,6 +1,6 @@
 ---
 title: "O Algoritmo EM"
-author: "Milena Paz"
+author: "Milena Paz Freitas"
 format: html
 lang: pt-BR
 title-block-banner: true
@@ -68,7 +68,7 @@ $$
 
 onde $\bm{s}(y_i, \hat{\bm \theta})$ é a função escore baseada apenas na observação $y_i$.
 
-Essa modificação do método Newton-Raphson tem custo computacional significativamente menor que o original (usando a matriz Hessiana completa) e, usando $I_e(\hat{\bm \theta})$.
+Essa modificação do método Newton-Raphson tem custo computacional significativamente menor que o original (usando a matriz Hessiana completa), usando $I_e(\hat{\bm \theta})$ no lugar de $I(\bm \theta)$.
 
 # 2. O algoritmo EM
 
@@ -96,8 +96,9 @@ $$Q(\hat{\bm \theta}^{(k+1)}| \hat{\bm \theta}^{(k)})>Q(\bm \theta| \hat{\bm \th
 3) Verifica-se se o critério de parada. Caso seja falso, retorna-se ao passo 1.
 :::
 
-## 2.1 Exemplo
+## 2.1 Exemplo com a distribuição T-student Locação-Escala
 
+::: {.callout-note appearance="minimal"}
 ### Distribuição T de Student
 
 Suponha que $T\sim t_\nu$, ou seja, $T$ seja uma variável aleatória de distribuição t-Student com $\nu$ graus de liberdade. Temos que:
@@ -111,6 +112,71 @@ onde $Z\sim N(0,1)$ e $C\sim \mathcal X^2_\nu$.
 Note que a qui-quadrado pode ser descrita como um caso particular da distribuição gama. Ou seja, se $C\sim \mathcal X^2_\nu$, então $C \sim \text{Gamma}(\nu/2,1/2)$. Logo:
 
 $$
-T=\frac{Z}{\sqrt{U}},
+T=\frac{Z}{\sqrt{U}}=ZU^{-1/2},
 $$
-onde $U\sim \text{Gamma}(\nu/2,\nu/2)$ (já tomando em conta a divisão pelos graus de liberdade).
+onde $U\sim \text{Gamma}(\nu/2,\nu/2)$, já tomando em conta a operação de escala.
+:::
+
+
+
+### Distribuição T-Student Locação-Escala
+
+Digamos que $T\sim \ell st(\mu, \sigma^2,\nu)$, com parâmetros de locação e escala $\mu \in \mathbb R$, e  $\sigma>0$. Sua densidade é dada por:
+
+$$
+f(t|\bm\theta)=
+\frac{\Gamma\left(\frac{\nu+1}{2}\right)}{\Gamma\left(\frac{\nu}{2}\right)\sigma\sqrt{\pi\nu}}
+\left(1+\frac{(t-\mu)^2}{\sigma^2\nu}\right)^{-(\nu+1)/2}, \quad t\in \mathbb R,
+$$
+
+onde $\bm \theta = (\mu,\sigma^2,\nu)^\intercal$. Podendo ser reescrita como:
+
+$$
+f(t|\bm\theta)=
+\frac{k(\nu)}{\sigma}
+\left(1+\frac{d^2_M(t,\mu,\sigma^2)}{\nu}\right)^{-(\nu+1)/2},
+$$
+onde $d_M^2(t,\mu,\sigma^2)=\frac{(t-\mu)^2}{\sigma^2}$ é quadrado da distância de Mahalanobis e $k(\nu)=\frac{\Gamma\left(\frac{\nu+1}{2}\right)}{\Gamma\left(\frac{\nu}{2}\right)\sqrt{\pi\nu}}$.
+
+Além disso, se $Y \sim t_\nu$ e $T=\mu +\sigma Y$, então $T\sim \ell st(\mu,\sigma^2,\nu)$. Outras propriedades da distribuição são:
+
+- $\text{E}(T)=\mu$, para $\nu>1$;
+
+- $\text{Var}(T)=\sigma^2\frac{\nu}{\nu-2}$.
+
+### Realizando inferência por meio do Algoritmo EM
+
+Suponha que temos uma a.a. $Y_1,..,Y_n \overset{iid}{\sim} \ell st(\mu,\sigma^2,\nu)$, onde $\nu$ é conhecido. Logo, o vetor de parâme\-tros é dado por $\bm \theta=(\mu,\sigma^2)$. Com a intenção de obter o estimador de máxima verossimilhança para $\bm \theta$, pode-se tentar pelo método tradicional:
+
+ $$L(\bm \theta |\bm y)=f(\bm y|\bm\theta)=\left(\frac{k(\nu)}{\sqrt {\sigma^2}}\right)^n
+ \prod^n_{i=1}\left(1+\frac{d^2_{Mi}}{\nu}\right)^{-(\nu+1)/2},$$
+
+onde $d^2_{Mi}=d^2_M(y_i,\mu,\sigma^2)$.
+
+ $$\Rightarrow l(\bm \theta)= n\log [k(\nu)] - \frac{n}{2}\log(\sigma^2) -\frac{\nu+1}{2}\sum^n_{i=1}log\left(1+d^2_{Mi}\nu^{-1}\right)$$
+ 
+Cujas funções escores são dadas por:
+ 
+$$
+S_1(\mu)= \frac{d}{d\mu}l(\bm \theta)=\sum^n_{i=1}\left(\frac{\nu+1}{\nu +d^2_{Mi}}\right)\frac{d_{Mi}}{\sigma}
+$$
+
+$$S_2(\sigma^2)=\frac{d}{d\sigma^2}l(\bm \theta)=-\frac{n}{2\sigma^2}+\sum^n_{i=1}\left(\frac{\nu+1}{\nu+d^2_{Mi}}\right)\frac{d^2_{Mi}}{2\sigma^2}$$
+
+Para tentar obter um estimador de máxima verossimilhança de $\bm \theta$, tradicionalmente, deve-se solucionar o sistema de equações:
+
+$$
+\begin{cases}
+S_1(\mu)=0
+\\
+S_2(\sigma^2)=0
+\end{cases},
+$$
+
+O que seria muito difícil de se fazer sem utilizar métodos iterativos (como, por exemplo, Newton-Raph\-son). Logo, podemos estimar esses parâmetros via Algoritmo EM, pensando no modelo t locação-escala da seguinte maneira:
+
+- $Y_i$ pode ser reescrito da seguinte forma:
+$$
+Y_i = \mu + U^{-1/2}Z,
+$$
+onde $Z\sim N(0,\sigma^2)$ e $U\sim \text{Gama}(\nu/2,\nu/2)$.
