@@ -2238,7 +2238,7 @@ window.Quarto = {
 
 <body class="quarto-light">
 
-<header id="title-block-header" class="quarto-title-block default page-columns page-full">
+<header id="title-block-header" class="quarto-title-block default toc-left page-columns page-full">
   <div class="quarto-title-banner page-columns page-full">
     <div class="quarto-title column-body">
       <h1 class="title">O Algoritmo EM</h1>
@@ -2269,9 +2269,9 @@ window.Quarto = {
 
     <div class="quarto-other-links-text-target">
     </div>  </div>
-</header><div id="quarto-content" class="page-columns page-rows-contents page-layout-article">
-<div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
-  <nav id="TOC" role="doc-toc" class="toc-active">
+</header><div id="quarto-content" class="page-columns page-rows-contents page-layout-article toc-left">
+<div id="quarto-sidebar-toc-left" class="sidebar toc-left">
+  <nav id="TOC" role="doc-toc" class="toc-active" data-toc-expanded="99">
     <h2 id="toc-title">Índice</h2>
    
   <ul>
@@ -2285,11 +2285,13 @@ window.Quarto = {
   <li><a href="#exemplo-com-a-distribuição-t-student-locação-escala" id="toc-exemplo-com-a-distribuição-t-student-locação-escala" class="nav-link" data-scroll-target="#exemplo-com-a-distribuição-t-student-locação-escala">2.1 Exemplo com a distribuição T-student Locação-Escala</a>
   <ul class="collapse">
   <li><a href="#distribuição-t-student-locação-escala" id="toc-distribuição-t-student-locação-escala" class="nav-link" data-scroll-target="#distribuição-t-student-locação-escala">Distribuição T-Student Locação-Escala</a></li>
-  <li><a href="#realizando-inferência-por-meio-do-algoritmo-em" id="toc-realizando-inferência-por-meio-do-algoritmo-em" class="nav-link" data-scroll-target="#realizando-inferência-por-meio-do-algoritmo-em">Realizando inferência por meio do Algoritmo EM</a></li>
+  <li><a href="#inferência-por-meio-do-algoritmo-em" id="toc-inferência-por-meio-do-algoritmo-em" class="nav-link" data-scroll-target="#inferência-por-meio-do-algoritmo-em">Inferência por meio do Algoritmo EM</a></li>
   </ul></li>
   </ul></li>
   </ul>
 </nav>
+</div>
+<div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
 </div>
 <main class="content quarto-banner-title-block" id="quarto-document-content">
 
@@ -2357,7 +2359,7 @@ I_e(\hat{\bm \theta})&amp;=  \sum^n_{i=1} \bm{s}(y_i| \hat{\bm \theta})\bm{s}^\i
 <p>É usado principalmente em casos de dados incompletos (censurados, faltantes, latentes, etc), porém <strong>não é restrito</strong> a esses casos. Define-se:</p>
 <ol type="i">
 <li><p>Seja <span class="math inline">\bm{Y_{ob}}</span> o vetor aleatório correspondente aos dados observados <span class="math inline">\bm y</span>, com f.d.p. <span class="math inline">f(\bm y|\bm \theta)</span>, onde <span class="math inline">\bm \theta \in \Theta</span> é seu vetor de parâmetros. <span class="math inline">\bm{Y_c}=(\bm{Y_{ob}},\bm{Y_{ms}})</span> é o vetor de dados completos, composto pelos dados observados e os dados acrescidos <span class="math inline">\bm{Y_{ms}}</span>.</p></li>
-<li><p>Denota-se <span class="math inline">L(\bm{\theta}|\bm{Y_c})=f(\bm{Y_c}|\bm \theta)</span> a função de verossimilhança dos dados completos e <span class="math inline">l_c(\bm{\theta}|\bm{Y_c})=\log [L(\bm{\theta}|\bm{Y_c})]</span> a log-verossimilhança dos mesmos.</p></li>
+<li><p>Denota-se <span class="math inline">L_c(\bm{\theta}|\bm{Y_c})=f(\bm{Y_c}|\bm \theta)</span> a função de verossimilhança dos dados completos e <span class="math inline">l_c(\bm{\theta}|\bm{Y_c})=\log [L(\bm{\theta}|\bm{Y_c})]</span> a log-verossimilhança dos mesmos.</p></li>
 <li><p>Defina a função <span class="math inline">Q</span> como a esperança condicional da log-verossimilhança dos dados completos, dado os dados observados e a estimativa <span class="math inline">\hat{\bm\theta}</span>: <span class="math display">
 Q(\bm \theta| \hat{\bm \theta})=
 E\left[l_c(\bm{\theta}|\bm{Y_c})|\bm{Y_{ob}},\hat{\bm \theta}\right]
@@ -2380,7 +2382,7 @@ E\left[l_c(\bm{\theta}|\bm{Y_c})|\bm{Y_{ob}},\hat{\bm \theta}\right]
 </div>
 <section id="exemplo-com-a-distribuição-t-student-locação-escala" class="level2">
 <h2 class="anchored" data-anchor-id="exemplo-com-a-distribuição-t-student-locação-escala">2.1 Exemplo com a distribuição T-student Locação-Escala</h2>
-<div class="callout callout-style-simple callout-note no-icon callout-titled">
+<div class="callout callout-style-simple callout-tip no-icon callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
 <i class="callout-icon no-icon"></i>
@@ -2421,11 +2423,19 @@ f(t|\bm\theta)=
 <li><p><span class="math inline">\text{Var}(T)=\sigma^2\frac{\nu}{\nu-2}</span>.</p></li>
 </ul>
 </section>
-<section id="realizando-inferência-por-meio-do-algoritmo-em" class="level3">
-<h3 class="anchored" data-anchor-id="realizando-inferência-por-meio-do-algoritmo-em">Realizando inferência por meio do Algoritmo EM</h3>
+<section id="inferência-por-meio-do-algoritmo-em" class="level3">
+<h3 class="anchored" data-anchor-id="inferência-por-meio-do-algoritmo-em">Inferência por meio do Algoritmo EM</h3>
 <p>Suponha que temos uma a.a. <span class="math inline">Y_1,..,Y_n \overset{iid}{\sim} \ell st(\mu,\sigma^2,\nu)</span>, onde <span class="math inline">\nu</span> é conhecido. Logo, o vetor de parâme-tros é dado por <span class="math inline">\bm \theta=(\mu,\sigma^2)</span>. Com a intenção de obter o estimador de máxima verossimilhança para <span class="math inline">\bm \theta</span>, pode-se tentar pelo método tradicional:</p>
-<p><span class="math display">L(\bm \theta |\bm y)=f(\bm y|\bm\theta)=\left(\frac{k(\nu)}{\sqrt {\sigma^2}}\right)^n
-\prod^n_{i=1}\left(1+\frac{d^2_{Mi}}{\nu}\right)^{-(\nu+1)/2},</span></p>
+<div class="callout callout-style-simple callout-tip no-icon">
+<div class="callout-body d-flex">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-body-container">
+<p><span class="math display">
+L(\bm \theta |\bm y)=f(\bm y|\bm\theta)=\left(\frac{k(\nu)}{\sqrt {\sigma^2}}\right)^n
+\prod^n_{i=1}\left(1+\frac{d^2_{Mi}}{\nu}\right)^{-(\nu+1)/2},
+</span></p>
 <p>onde <span class="math inline">d^2_{Mi}=d^2_M(y_i,\mu,\sigma^2)</span>.</p>
 <p><span class="math display">\Rightarrow l(\bm \theta)= n\log [k(\nu)] - \frac{n}{2}\log(\sigma^2) -\frac{\nu+1}{2}\sum^n_{i=1}log\left(1+d^2_{Mi}\nu^{-1}\right)</span></p>
 <p>Cujas funções escores são dadas por:</p>
@@ -2441,12 +2451,75 @@ S_1(\mu)=0
 S_2(\sigma^2)=0
 \end{cases},
 </span></p>
-<p>O que seria muito difícil de se fazer sem utilizar métodos iterativos (como, por exemplo, Newton-Raph-son). Logo, podemos estimar esses parâmetros via Algoritmo EM, pensando no modelo t locação-escala da seguinte maneira:</p>
+<p>O que seria muito difícil de se fazer sem utilizar métodos iterativos (como, por exemplo, Newton-Raph-son).</p>
+</div>
+</div>
+</div>
+<p>Podemos estimar também esses parâmetros via Algoritmo EM, pensando no modelo t locação-escala da seguinte maneira:</p>
 <ul>
-<li><span class="math inline">Y_i</span> pode ser reescrito da seguinte forma: <span class="math display">
+<li><p><span class="math inline">Y_i</span> pode ser reescrito da seguinte forma: <span class="math display">
 Y_i = \mu + U^{-1/2}Z,
-</span> onde <span class="math inline">Z\sim N(0,\sigma^2)</span> e <span class="math inline">U\sim \text{Gama}(\nu/2,\nu/2)</span>.</li>
+</span> onde <span class="math inline">Z\sim N(0,\sigma^2) \perp\!\!\!\perp U\sim \text{Gama}(\nu/2,\nu/2)</span>.</p></li>
+<li><p>Assim, temos que:</p></li>
 </ul>
+<p><span class="math display">Y_i|U_i=u_i\sim N(\mu,u_i^{-1}\sigma^2),\quad i=1,2,...,n.\quad U_i\overset{iid}\sim \text{Gama}(\nu/2,\nu/2).</span></p>
+<p>Considerando, então <span class="math inline">\bm y= (y_1,...,y_n)</span> como o vetor de dados observados e <span class="math inline">\bm u= (u_1,...,u_n)</span>, temos que o vetor de dados completos seria dado por <span class="math inline">\bm y_c=(\bm y,\bm u)^\intercal</span>. Assim, temos que a função de verossimilhança dos dados completos é:</p>
+<p><span class="math display">
+L_c(\bm \theta| \bm y_c)=\frac{\prod^n_{i=1}u_i^{1/2}}{(2\pi\sigma^2)^{n/2}}
+\exp\left\{ -\frac{1}{2\sigma^2}\sum^n_{i=1} u_i(y_i-\mu)^2 \right\}
+\prod^n_{i=1}u^{\nu-1}\exp\left\{ -\frac{\nu}{2}\small\sum^n_{i=1} u_i \right\}
+</span></p>
+<p><span class="math display">
+\Rightarrow l_c(\bm \theta)= -\frac{n}{2}\log\sigma^2-\frac{1}{2\sigma^2}\sum^n_{i=1} u_i(y_i-\mu)^2 + c(\bm u, \nu),
+</span> onde <span class="math inline">c(\bm u, \nu)=c</span> é constante em relação a <span class="math inline">\bm \theta</span>. Considerando <span class="math inline">\bm{\hat\theta}^{(k)}=(\hat\mu^{(k)},{\hat\sigma^2}^{(k)})</span> a estimativa de <span class="math inline">\bm \theta</span> na k-ésima iteração, formula-se a esperança condicional da log-verossimilhança completa:</p>
+<p><span class="math display">
+Q(\bm \theta| \hat{\bm \theta})= \text{E}[l_c(\bm \theta)|\bm y,\bm {\hat\theta}]=c-\frac{n \ln\sigma^2}{2}-\frac{1}{2\sigma^2}\sum^n_{i=1}\text{E}[u_i|y_i,\bm{\hat\theta}](y_i-\mu)^2
+</span></p>
+<p>Sabendo que <span class="math inline">U|Y\sim \text{Gama}\left( \frac{\nu+1}{2}, \frac{\nu+d^2_M(y,\mu,\sigma^2)}{2} \right)</span>, então <span class="math inline">\text E[u_i|y_i,\bm \theta]=\frac{\nu+1}{\nu+d^2_M}</span> e:</p>
+<p><span class="math display">
+\begin{aligned}
+Q(\bm \theta| \hat{\bm \theta})&amp;=c-\frac{n \ln\sigma^2}{2}-\frac{1}{2\sigma^2}\sum^n_{i=1}\frac{\nu+1}{\nu+\frac{(y_i-\hat\mu)^2}{\hat\sigma^2}}(y_i-\mu)^2
+\\
+&amp;=c-\frac{n \ln\sigma^2}{2}-\frac{1}{2\sigma^2}\sum^n_{i=1}\hat u_i(y_i-\mu)^2,
+\end{aligned}
+</span></p>
+<p>onde <span class="math inline">\hat u_i=\frac{\nu+1}{\nu+d^2_{Mi}(y_i,\hat\mu,\hat\sigma^2)}</span>. Logo:</p>
+<ul>
+<li><span class="math display">
+\left. \frac{dQ(\bm \theta| \hat{\bm \theta})}{d\mu} \right\vert^{\bm \mu=\bm{\hat \mu^{(k+1)}};\bm{\hat \theta}=\bm{\hat \theta^{(k)}}}
+= \left.\frac{1}{\sigma^2}\sum^n_{i=1}\hat u_i(y_i-\mu) \right\vert^{\bm \mu=\bm{\hat \mu^{(k+1)}};\bm{\hat \theta}=\bm{\hat \theta^{(k)}}}=0
+</span></li>
+</ul>
+<p><span id="eq-mu"><span class="math display">
+\Rightarrow \hat\mu^{(k+1)}=\frac{\sum^n_{i=1}\hat u_i^{(k)}y_i}{\sum^n_{i=1}\hat u_i^{(k)}}
+\tag{1}</span></span></p>
+<ul>
+<li><span class="math display">
+\left. \frac{dQ(\bm \theta| \hat{\bm \theta})}{d\sigma} \right\vert^{{\bm \sigma^2}={\bm{\hat \sigma^2}^{(k+1)}};\bm{\hat \theta}=\bm{\hat \theta^{(k)}}}=
+\left. -\frac{n}{2\sigma^2}+\frac{1}{2(\sigma^2)^2}\sum^n_{i=1}u_i(y_i-\mu)^2\right\vert^{{\bm \sigma^2}={\bm{\hat \sigma^2}^{(k+1)}};\bm{\hat \theta}=\bm{\hat \theta^{(k)}}}=0
+</span></li>
+</ul>
+<p><span id="eq-sigma2"><span class="math display">
+\Rightarrow {\hat\sigma^2}^{(k+1)}=\frac{\sum^n_{i=1}\hat u_i^{(k)}(y_i-{\hat\mu}^{(k)})^2}{n}
+\tag{2}</span></span></p>
+<p>Portanto, para <span class="math inline">\nu</span> conhecido, definimos o seguinte algoritmo:</p>
+<div class="callout callout-style-simple callout-note no-icon">
+<div class="callout-body d-flex">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-body-container">
+<p>Definido o valor inicial <span class="math inline">\bm{\hat\theta}^{(0)}</span> e um critério de parada, realiza-se o seguinte:</p>
+<ol type="1">
+<li><strong>Passo E</strong>: Dado <span class="math inline">\bm{\hat \theta}=\bm{\hat\theta}^{(k)}</span>, calcular:</li>
+</ol>
+<p><span class="math display">\hat u_i=\frac{\nu+1}{\nu+d^2_{Mi}(y_i,\hat\mu,\hat\sigma^2)};</span></p>
+<ol start="2" type="1">
+<li><strong>Passo M</strong>: Obtem-se <span class="math inline">\hat{\bm \theta}^{(k+1)}</span> que maximize a função obtida no passo anterior, tal que <span class="math display">Q(\hat{\bm \theta}^{(k+1)}| \hat{\bm \theta}^{(k)})&gt;Q(\bm \theta| \hat{\bm \theta}^{(k)})</span> Ou seja, calcula-se os pontos críticos na <a href="#eq-mu" class="quarto-xref">Equação 1</a> e <a href="#eq-sigma2" class="quarto-xref">Equação 2</a>.</li>
+</ol>
+</div>
+</div>
+</div>
 
 </section>
 </section>

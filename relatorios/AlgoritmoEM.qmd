@@ -10,7 +10,10 @@ editor: source
 theme: sandstone
 html-math-method: katex
 bibliography: "ref.bib"
+callout-appearance: "minimal"
 toc: true
+toc-location: left
+toc-expand: true
 csl: abnt.csl
 nocite: |
         @mclachlan2008
@@ -76,7 +79,7 @@ Essa modificação do método Newton-Raphson tem custo computacional significati
 
 i. Seja $\bm{Y_{ob}}$ o vetor aleatório correspondente aos dados observados $\bm y$, com f.d.p. $f(\bm y|\bm \theta)$, onde $\bm \theta \in \Theta$ é seu vetor de parâmetros. $\bm{Y_c}=(\bm{Y_{ob}},\bm{Y_{ms}})$ é o vetor de dados completos, composto pelos dados observados e os dados acrescidos $\bm{Y_{ms}}$.
 
-ii. Denota-se $L(\bm{\theta}|\bm{Y_c})=f(\bm{Y_c}|\bm \theta)$ a função de verossimilhança dos dados completos e $l_c(\bm{\theta}|\bm{Y_c})=\log [L(\bm{\theta}|\bm{Y_c})]$ a log-verossimilhança dos mesmos.
+ii. Denota-se $L_c(\bm{\theta}|\bm{Y_c})=f(\bm{Y_c}|\bm \theta)$ a função de verossimilhança dos dados completos e $l_c(\bm{\theta}|\bm{Y_c})=\log [L(\bm{\theta}|\bm{Y_c})]$ a log-verossimilhança dos mesmos.
 
 iii. Defina a função $Q$ como a esperança condicional da log-verossimilhança dos dados completos, dado os dados observados e a estimativa $\hat{\bm\theta}$: 
 $$
@@ -98,7 +101,7 @@ $$Q(\hat{\bm \theta}^{(k+1)}| \hat{\bm \theta}^{(k)})>Q(\bm \theta| \hat{\bm \th
 
 ## 2.1 Exemplo com a distribuição T-student Locação-Escala
 
-::: {.callout-note appearance="minimal"}
+::: {.callout-tip appearance="minimal"}
 ### Distribuição T de Student
 
 Suponha que $T\sim t_\nu$, ou seja, $T$ seja uma variável aleatória de distribuição t-Student com $\nu$ graus de liberdade. Temos que:
@@ -116,8 +119,6 @@ T=\frac{Z}{\sqrt{U}}=ZU^{-1/2},
 $$
 onde $U\sim \text{Gamma}(\nu/2,\nu/2)$, já tomando em conta a operação de escala.
 :::
-
-
 
 ### Distribuição T-Student Locação-Escala
 
@@ -144,12 +145,16 @@ Além disso, se $Y \sim t_\nu$ e $T=\mu +\sigma Y$, então $T\sim \ell st(\mu,\s
 
 - $\text{Var}(T)=\sigma^2\frac{\nu}{\nu-2}$.
 
-### Realizando inferência por meio do Algoritmo EM
+### Inferência por meio do Algoritmo EM
 
 Suponha que temos uma a.a. $Y_1,..,Y_n \overset{iid}{\sim} \ell st(\mu,\sigma^2,\nu)$, onde $\nu$ é conhecido. Logo, o vetor de parâme\-tros é dado por $\bm \theta=(\mu,\sigma^2)$. Com a intenção de obter o estimador de máxima verossimilhança para $\bm \theta$, pode-se tentar pelo método tradicional:
 
- $$L(\bm \theta |\bm y)=f(\bm y|\bm\theta)=\left(\frac{k(\nu)}{\sqrt {\sigma^2}}\right)^n
- \prod^n_{i=1}\left(1+\frac{d^2_{Mi}}{\nu}\right)^{-(\nu+1)/2},$$
+::: {.callout-tip}
+
+$$
+L(\bm \theta |\bm y)=f(\bm y|\bm\theta)=\left(\frac{k(\nu)}{\sqrt {\sigma^2}}\right)^n
+ \prod^n_{i=1}\left(1+\frac{d^2_{Mi}}{\nu}\right)^{-(\nu+1)/2},
+$$
 
 onde $d^2_{Mi}=d^2_M(y_i,\mu,\sigma^2)$.
 
@@ -173,10 +178,81 @@ S_2(\sigma^2)=0
 \end{cases},
 $$
 
-O que seria muito difícil de se fazer sem utilizar métodos iterativos (como, por exemplo, Newton-Raph\-son). Logo, podemos estimar esses parâmetros via Algoritmo EM, pensando no modelo t locação-escala da seguinte maneira:
+O que seria muito difícil de se fazer sem utilizar métodos iterativos (como, por exemplo, Newton-Raph\-son).
+:::
+
+Podemos estimar também esses parâmetros via Algoritmo EM, pensando no modelo t locação-escala da seguinte maneira:
 
 - $Y_i$ pode ser reescrito da seguinte forma:
 $$
 Y_i = \mu + U^{-1/2}Z,
 $$
-onde $Z\sim N(0,\sigma^2)$ e $U\sim \text{Gama}(\nu/2,\nu/2)$.
+onde $Z\sim N(0,\sigma^2) \perp\!\!\!\perp U\sim \text{Gama}(\nu/2,\nu/2)$.
+
+- Assim, temos que:
+
+$$Y_i|U_i=u_i\sim N(\mu,u_i^{-1}\sigma^2),\quad i=1,2,...,n.\quad U_i\overset{iid}\sim \text{Gama}(\nu/2,\nu/2).$$
+
+Considerando, então $\bm y= (y_1,...,y_n)$ como o vetor de dados observados e $\bm u= (u_1,...,u_n)$, temos que o vetor de dados completos seria dado por $\bm y_c=(\bm y,\bm u)^\intercal$. Assim, temos que a função de verossimilhança dos dados completos é:
+
+$$
+L_c(\bm \theta| \bm y_c)=\frac{\prod^n_{i=1}u_i^{1/2}}{(2\pi\sigma^2)^{n/2}}
+\exp\left\{ -\frac{1}{2\sigma^2}\sum^n_{i=1} u_i(y_i-\mu)^2 \right\}
+\prod^n_{i=1}u^{\nu-1}\exp\left\{ -\frac{\nu}{2}\small\sum^n_{i=1} u_i \right\}
+$$
+
+$$
+\Rightarrow l_c(\bm \theta)= -\frac{n}{2}\log\sigma^2-\frac{1}{2\sigma^2}\sum^n_{i=1} u_i(y_i-\mu)^2 + c(\bm u, \nu),
+$$
+onde $c(\bm u, \nu)=c$ é constante em relação a $\bm \theta$. Considerando $\bm{\hat\theta}^{(k)}=(\hat\mu^{(k)},{\hat\sigma^2}^{(k)})$ a estimativa de $\bm \theta$ na k-ésima iteração, formula-se a esperança condicional da log-verossimilhança completa:
+
+$$
+Q(\bm \theta| \hat{\bm \theta})= \text{E}[l_c(\bm \theta)|\bm y,\bm {\hat\theta}]=c-\frac{n \ln\sigma^2}{2}-\frac{1}{2\sigma^2}\sum^n_{i=1}\text{E}[u_i|y_i,\bm{\hat\theta}](y_i-\mu)^2
+$$
+
+Sabendo que $U|Y\sim \text{Gama}\left( \frac{\nu+1}{2}, \frac{\nu+d^2_M(y,\mu,\sigma^2)}{2} \right)$, então $\text E[u_i|y_i,\bm \theta]=\frac{\nu+1}{\nu+d^2_M}$ e:
+
+$$
+\begin{aligned}
+Q(\bm \theta| \hat{\bm \theta})&=c-\frac{n \ln\sigma^2}{2}-\frac{1}{2\sigma^2}\sum^n_{i=1}\frac{\nu+1}{\nu+\frac{(y_i-\hat\mu)^2}{\hat\sigma^2}}(y_i-\mu)^2
+\\
+&=c-\frac{n \ln\sigma^2}{2}-\frac{1}{2\sigma^2}\sum^n_{i=1}\hat u_i(y_i-\mu)^2,
+\end{aligned}
+$$
+
+onde $\hat u_i=\frac{\nu+1}{\nu+d^2_{Mi}(y_i,\hat\mu,\hat\sigma^2)}$. Logo:
+
+*
+$$
+\left. \frac{dQ(\bm \theta| \hat{\bm \theta})}{d\mu} \right\vert^{\bm \mu=\bm{\hat \mu^{(k+1)}};\bm{\hat \theta}=\bm{\hat \theta^{(k)}}}
+= \left.\frac{1}{\sigma^2}\sum^n_{i=1}\hat u_i(y_i-\mu) \right\vert^{\bm \mu=\bm{\hat \mu^{(k+1)}};\bm{\hat \theta}=\bm{\hat \theta^{(k)}}}=0
+$$
+
+$$
+\Rightarrow \hat\mu^{(k+1)}=\frac{\sum^n_{i=1}\hat u_i^{(k)}y_i}{\sum^n_{i=1}\hat u_i^{(k)}}
+$$ {#eq-mu}
+
+*
+$$
+\left. \frac{dQ(\bm \theta| \hat{\bm \theta})}{d\sigma} \right\vert^{{\bm \sigma^2}={\bm{\hat \sigma^2}^{(k+1)}};\bm{\hat \theta}=\bm{\hat \theta^{(k)}}}=
+\left. -\frac{n}{2\sigma^2}+\frac{1}{2(\sigma^2)^2}\sum^n_{i=1}u_i(y_i-\mu)^2\right\vert^{{\bm \sigma^2}={\bm{\hat \sigma^2}^{(k+1)}};\bm{\hat \theta}=\bm{\hat \theta^{(k)}}}=0
+$$
+
+$$
+\Rightarrow {\hat\sigma^2}^{(k+1)}=\frac{\sum^n_{i=1}\hat u_i^{(k)}(y_i-{\hat\mu}^{(k)})^2}{n}
+$$ {#eq-sigma2}
+
+Portanto, para $\nu$ conhecido, definimos o seguinte algoritmo:
+
+::: {.callout-note appearance="minimal"}
+Definido o valor inicial $\bm{\hat\theta}^{(0)}$ e um critério de parada, realiza-se o seguinte:
+
+1) **Passo E**: Dado $\bm{\hat \theta}=\bm{\hat\theta}^{(k)}$, calcular:
+
+$$\hat u_i=\frac{\nu+1}{\nu+d^2_{Mi}(y_i,\hat\mu,\hat\sigma^2)};$$
+
+2) **Passo M**: Obtem-se $\hat{\bm \theta}^{(k+1)}$ que maximize a função obtida no passo anterior, tal que
+$$Q(\hat{\bm \theta}^{(k+1)}| \hat{\bm \theta}^{(k)})>Q(\bm \theta| \hat{\bm \theta}^{(k)})$$
+Ou seja, calcula-se os pontos críticos na @eq-mu e @eq-sigma2.
+:::
+
