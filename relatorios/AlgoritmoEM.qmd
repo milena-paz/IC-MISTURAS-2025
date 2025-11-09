@@ -158,7 +158,9 @@ $$
 
 onde $d^2_{Mi}=d^2_M(y_i,\mu,\sigma^2)$.
 
- $$\Rightarrow l(\bm \theta)= n\log [k(\nu)] - \frac{n}{2}\log(\sigma^2) -\frac{\nu+1}{2}\sum^n_{i=1}log\left(1+d^2_{Mi}\nu^{-1}\right)$$
+ $$
+ \Rightarrow l(\bm \theta)= n\log [k(\nu)] - \frac{n}{2}\log(\sigma^2) -\frac{\nu+1}{2}\sum^n_{i=1}log\left(1+d^2_{Mi}\nu^{-1}\right)
+ $$
  
 Cujas funções escores são dadas por:
  
@@ -249,10 +251,57 @@ Definido o valor inicial $\bm{\hat\theta}^{(0)}$ e um critério de parada, reali
 
 1) **Passo E**: Dado $\bm{\hat \theta}=\bm{\hat\theta}^{(k)}$, calcular:
 
-$$\hat u_i=\frac{\nu+1}{\nu+d^2_{Mi}(y_i,\hat\mu,\hat\sigma^2)};$$
+$$\hat u_i=\frac{\nu+1}{\nu+d^2_{Mi}(y_i,\hat\mu,\hat\sigma^2)},\quad i=1,2,...,n;$$
 
 2) **Passo M**: Obtem-se $\hat{\bm \theta}^{(k+1)}$ que maximize a função obtida no passo anterior, tal que
 $$Q(\hat{\bm \theta}^{(k+1)}| \hat{\bm \theta}^{(k)})>Q(\bm \theta| \hat{\bm \theta}^{(k)})$$
 Ou seja, calcula-se os pontos críticos na @eq-mu e @eq-sigma2.
 :::
+
+### Simulação do exemplo
+
+```{r}
+#fixando os parametros e tamanho amostral
+n <- 30
+nu <- 5
+sigma2<- 6
+mu <- 20
+
+#gerando amostra t locacao-escala
+y <- mu+rt(n, df=nu)*sqrt(sigma2)
+
+l<- function(theta,u){
+  -n/2*log(theta[2]) - sum(u*(y-theta[1])^2)/(2*theta[2])
+}#fim funcao logverossimilhanca (somente parte dependente de theta)
+
+#funcao de checagem de criterio de parada
+crit <- function(l1,k2,u){
+  abs(l1-l(k2,u)) > 1e-9
+}
+
+EM <- function(muhat,sighat ){
+  cont<-1
+  l1<-100
+  u <- 1
+  while(crit(l1,c(muhat,sighat),u)){
+    #--------PASSO E--------#
+    u <- (nu+1)/(nu+(y-muhat)^2/sighat)
+    #-----------------------#
+    l1<- l(c(muhat,sighat),u)
+    #--------PASSO M--------#
+    muhat <- sum(u*y)/sum(u)
+    sighat <- sum(u*(y-muhat)^2)/n
+    #-----------------------#
+    cat("Iteração ",cont,": muhat=",muhat," sighat=",sighat,"\n")
+    cont<-cont+1
+  }
+  return(c(mu=muhat,sigma2=sighat))
+}#fim funcao algoritmo EM
+
+# chute inicial usando media e variancia amostrais
+EM(mean(y),var(y))
+
+# chute padrao
+EM(0,1)
+```
 
