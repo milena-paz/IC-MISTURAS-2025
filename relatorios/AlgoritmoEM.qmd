@@ -236,12 +236,12 @@ $$ {#eq-mu}
 
 *
 $$
-\left. \frac{dQ(\bm \theta| \hat{\bm \theta})}{d\sigma} \right\vert^{{\bm \sigma^2}={\bm{\hat \sigma^2}^{(k+1)}};\bm{\hat \theta}=\bm{\hat \theta^{(k)}}}=
-\left. -\frac{n}{2\sigma^2}+\frac{1}{2(\sigma^2)^2}\sum^n_{i=1}u_i(y_i-\mu)^2\right\vert^{{\bm \sigma^2}={\bm{\hat \sigma^2}^{(k+1)}};\bm{\hat \theta}=\bm{\hat \theta^{(k)}}}=0
+\left. \frac{dQ(\bm \theta| \hat{\bm \theta})}{d\sigma} \right\vert^{{\bm \theta}={\bm{\hat \theta}^{(k+1)}};\bm{\hat \theta}=\bm{\hat \theta^{(k)}}}=
+\left. -\frac{n}{2\sigma^2}+\frac{1}{2(\sigma^2)^2}\sum^n_{i=1}\hat u_i(y_i-\mu)^2\right\vert^{{\bm \theta}={\bm{\hat \theta}^{(k+1)}};\bm{\hat \theta}=\bm{\hat \theta^{(k)}}}=0
 $$
 
 $$
-\Rightarrow {\hat\sigma^2}^{(k+1)}=\frac{\sum^n_{i=1}\hat u_i^{(k)}(y_i-{\hat\mu}^{(k)})^2}{n}
+\Rightarrow {\hat\sigma^2}^{(k+1)}=\frac{\sum^n_{i=1}\hat u_i^{(k)}(y_i-{\hat\mu}^{(k+1)})^2}{n}
 $$ {#eq-sigma2}
 
 Portanto, para $\nu$ conhecido, definimos o seguinte algoritmo:
@@ -251,7 +251,7 @@ Definido o valor inicial $\bm{\hat\theta}^{(0)}$ e um critério de parada, reali
 
 1) **Passo E**: Dado $\bm{\hat \theta}=\bm{\hat\theta}^{(k)}$, calcular:
 
-$$\hat u_i=\frac{\nu+1}{\nu+d^2_{Mi}(y_i,\hat\mu,\hat\sigma^2)},\quad i=1,2,...,n;$$
+$$\hat u_i^{(k)}=\frac{\nu+1}{\nu+d^2_{Mi}(y_i,\hat\mu^{(k)},{\hat\sigma^2}^{(k)})},\quad i=1,2,...,n;$$
 
 2) **Passo M**: Obtem-se $\hat{\bm \theta}^{(k+1)}$ que maximize a função obtida no passo anterior, tal que
 $$Q(\hat{\bm \theta}^{(k+1)}| \hat{\bm \theta}^{(k)})>Q(\bm \theta| \hat{\bm \theta}^{(k)})$$
@@ -305,3 +305,123 @@ EM(mean(y),var(y))
 EM(0,1)
 ```
 
+## 2.2 Extensões do Algoritmo EM
+
+Note que o exemplo 2.1 foi dado sob a suposição de que $\nu$ era fixo e conhecido, pois caso contrá\-rio o processo realizado não seria possível da forma que foi feito. Nem sempre a função $Q$ encon\-trada terá uma expressão fechada ou computacionalmente simples, o que pode tornar o algoritmo EM inviável.
+Nesses casos, é possível utilizar variações do mesmo que foram formuladas para esses tipos de situação. A seguir serão apresentados as variantes ECM [@ecm] e ECME [@ecme], classificados como GEMs, algoritmos EM generalizados:
+
+### 2.2.1 Experança-Maximização Condicional (ECM)
+
+  No algoritmo ECM, $\bm \theta$ é subdividido em $S$ subvetores: $\bm \theta=(\bm \theta_1,...,\bm \theta_S)$; para que $Q$ seja, então, maximizada em relação a cada um dessas partições individualmente, com as demais fixadas em seu valor anterior. Ou seja, o passo M se divide em $S$ passos CM, gerando a seguinte formulação do algoritmo:
+  
+::: {.callout-note appearance="minimal"}
+1) **Passo E**: Calcula-se $Q(\bm \theta| \hat{\bm \theta}^{(k)})$;
+
+2) **Passos CM**: Para cada $i =1,...,S$, se faz:
+    - CM-i: Fixando todos os subvetores $\bm {\hat\theta_j}^{(k)}$, $j \neq i$, busca-se um $\bm \theta_i=\bm{\hat \theta_i}^{(k+1)}$ que maximize $Q(\bm{\theta_i}| \hat{\bm \theta}_{j\neq i}^{(k)})$.
+    
+:::
+
+#### Exemplo com a distribuição T-student Locação-Escala
+
+Considerando a situação do exemplo 2.1, mas com $\nu$ desconhecido, podemos aplicar o algoritmo ECM dividindo $\bm \theta=(\bm \theta_1, \theta_2)$, onde $\bm \theta_1=(\mu,\sigma^2)$ e $\theta_2=\nu$. A log-verossimilhança para $\nu$ desconhecido é como segue:
+
+$$
+l_c(\bm \theta)=
+\\
+\frac{\nu}{2}\left(\sum^n_{i=1}\log u_i-\sum^n_{i=1}u_i+ n\log (\nu/2) \right)
+-n\log\big[\Gamma(\nu/2)\big]-\frac{n}{2}\log\sigma^2-\frac{1}{2\sigma^2}\sum^n_{i=1} u_i(y_i-\mu)^2 + c(\bm u),
+$$
+
+onde $c(\bm u)$ é uma constante em relação a $\bm \theta$. Assim, temos que a função $Q$ é:
+
+$$
+\begin{aligned}
+Q(\bm \theta| \bm{\hat\theta}^{(k)})&=
+\frac{\nu}{2}\sum^n_{i=1}\left(\text E [\log u_i|\bm y, \hat \theta]-
+\text E [u_i|\bm y, \hat \theta]\right)+n\left(\frac{\nu}{2}\log(\nu/2)-\log \big[\Gamma(\nu/2)\big]\right)
+\\
+&-\frac{n}{2}\log\sigma^2-\frac{1}{2\sigma^2}\sum^n_{i=1} \text E [u_i|\bm y, \hat \theta](y_i-\mu)^2
+\end{aligned}
+$$
+
+$$
+=
+\frac{\nu}{2}\sum^n_{i=1}\left(\hat\ell_i^{(k)}-\hat u_i^{(k)}\right)+n\left(\frac{\nu}{2}\log(\nu/2)-\log \big[\Gamma(\nu/2)\big]\right)-\frac{n}{2}\log\sigma^2-\frac{1}{2\sigma^2}\sum^n_{i=1} \hat u_i^{(k)}(y_i-\mu)^2,
+$$
+
+onde $\hat u_i^{(k)}=\frac{\hat\nu^{(k)}+1}{\hat\nu^{(k)}+d^2_{Mi}(y_i,\hat\mu^{(k)}),{\hat\sigma^2}^{(k)})}$ e $\hat\ell_i^{(k)}$ pode ser obtido da seguinte forma:
+
+::: {.callout-tip}
+Sabendo que $U|Y\sim \text{Gama}\left( \frac{\nu+1}{2}, \frac{\nu+d^2_M(y,\mu,\sigma^2)}{2} \right)\in$ família exponencial, pode-se reescrever a sua densidade da seguinte forma:
+
+$$
+f(u|y,\bm \theta)=\frac{\left[\frac{\nu+d^2_M}{2}\right]^{\frac{\nu+1}{2}}}{\Gamma\left[(\nu+1)/2\right]}
+\exp\left\{ -\frac{\nu+d^2_M}{2}u + \left[\frac{\nu+1}{2}-1\right]\log u \right\}
+$$
+Tomando $\eta_1=-\frac{\nu+d^2_M}{2}$ e $\eta_2=\frac{\nu+1}{2}-1$, temos que, na forma canônica:
+
+$$
+\begin{aligned}
+f(u|y,\bm \eta)&=\frac{{-\eta_1}^{\eta_2+1}}{\Gamma\left[\eta_2+1\right]}
+\exp\left\{ \eta_1u + \eta_2\log u \right\}
+\\
+&=c^*(\bm \eta)\exp\left\{ \eta_1T_1(u) + \eta_2T_2(u) \right\}
+\end{aligned}
+$$
+
+A partir do resultado $\text E[T_i(x)]=-\frac{d \log c^*(\bm \eta)}{d\eta_i}$, temos que:
+
+$$
+\begin{aligned}
+\hat\ell&=\text E [\log u|\bm y, \hat \theta]=\psi(\eta_2+1)-\log(-\eta_1)
+\\
+&=\psi[(\nu+1)/2] - \log \left(\frac{\nu+d^2_M}{2}\right),
+\end{aligned}
+$$
+onde $\psi(\eta_2+1)=\frac{\Gamma'(\eta_2+1)}{\Gamma(\eta_2+1)}$ é a função digamma de $\eta_2+1$.
+
+:::
+
+O passo CM-1 seria idêntico ao passo M no exemplo 2.1, fixado um valor $\nu=\hat\nu^{(k)}$. Para o passo CM-2, temos que achar um valor $\nu^{(k+1)}$ que seja resolução da equação:
+
+$$
+\left. \frac{dQ(\bm \theta| \hat{\bm \theta})}{d\nu} \right\vert^{\bm{\hat \theta}=\bm{\hat \theta}^{(k+1)}}=0
+$$
+
+$$
+\Rightarrow \frac{n}{2}\left[ \log(\hat\nu^{(k+1)}/2)+ 1-\psi(\hat\nu^{(k+1)}/2)+\frac{\sum^n_{i=1}(\hat\ell_i^{(k+1)}-\hat u_i^{(k+1)})}{n}\right]=0
+$$
+
+$$
+\Rightarrow \log(\hat\nu^{(k+1)}/2)+ 1-\psi(\hat\nu^{(k+1)}/2)+\frac{\sum^n_{i=1}(\hat\ell_i^{(k+1)}-\hat u_i^{(k+1)})}{n}=0,
+$$
+
+o que pode ser encontrado através de métodos numéricos. Tem-se, então, o seguinte algoritmo:
+
+::: {.callout-note}
+
+- Passo E: Dado $\bm{\hat \theta}=\bm{\hat\theta}^{(k)}$, calcular:
+
+$$\hat u_i^{(k)}=\frac{\hat\nu^{(k+1)}+1}{\hat\nu^{(k+1)}+d^2_{Mi}(y_i,\hat\mu^{(k)},{\hat\sigma^2}^{(k)})},\quad i=1,2,...,n;$$
+
+$$
+\hat\ell_i^{(k)}=\psi[(\hat\nu^{(k)}+1)/2] - \log \left(\frac{\hat\nu^{(k)}+{d^2_{Mi}}^{(k)}}{2}\right)
+$$
+
+- Passo CM-1: Obter os seguintes pontos críticos, fixado $\nu=\hat\nu^{(k)}$:
+
+$$
+\begin{aligned}
+&\hat\mu^{(k+1)}=\frac{\sum^n_{i=1}\hat u_i^{(k)}y_i}{\sum^n_{i=1}\hat u_i^{(k)}}
+\\
+&{\hat\sigma^2}^{(k+1)}=\frac{\sum^n_{i=1}\hat u_i^{(k)}(y_i-{\hat\mu}^{(k+1)})^2}{n}
+\end{aligned}
+$$
+
+- Passo CM-2: Achar um valor $\nu^{(k+1)}$ que seja resolução da equação:
+$$
+\log(\hat\nu^{(k+1)}/2)+ 1-\psi(\hat\nu^{(k+1)}/2)+\frac{\sum^n_{i=1}(\hat\ell_i^{(k+1)}-\hat u_i^{(k+1)})}{n}=0
+$$
+
+:::

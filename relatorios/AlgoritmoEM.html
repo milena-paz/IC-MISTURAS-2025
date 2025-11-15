@@ -2323,6 +2323,10 @@ window.Quarto = {
   <li><a href="#inferência-por-meio-do-algoritmo-em" id="toc-inferência-por-meio-do-algoritmo-em" class="nav-link" data-scroll-target="#inferência-por-meio-do-algoritmo-em">Inferência por meio do Algoritmo EM</a></li>
   <li><a href="#simulação-do-exemplo" id="toc-simulação-do-exemplo" class="nav-link" data-scroll-target="#simulação-do-exemplo">Simulação do exemplo</a></li>
   </ul></li>
+  <li><a href="#extensões-do-algoritmo-em" id="toc-extensões-do-algoritmo-em" class="nav-link" data-scroll-target="#extensões-do-algoritmo-em">2.2 Extensões do Algoritmo EM</a>
+  <ul class="collapse">
+  <li><a href="#experança-maximização-condicional-ecm" id="toc-experança-maximização-condicional-ecm" class="nav-link" data-scroll-target="#experança-maximização-condicional-ecm">2.2.1 Experança-Maximização Condicional (ECM)</a></li>
+  </ul></li>
   </ul></li>
   </ul>
 </nav>
@@ -2533,12 +2537,12 @@ Q(\bm \theta| \hat{\bm \theta})&amp;=c-\frac{n \ln\sigma^2}{2}-\frac{1}{2\sigma^
 \tag{1}</span></span></p>
 <ul>
 <li><span class="math display">
-\left. \frac{dQ(\bm \theta| \hat{\bm \theta})}{d\sigma} \right\vert^{{\bm \sigma^2}={\bm{\hat \sigma^2}^{(k+1)}};\bm{\hat \theta}=\bm{\hat \theta^{(k)}}}=
-\left. -\frac{n}{2\sigma^2}+\frac{1}{2(\sigma^2)^2}\sum^n_{i=1}u_i(y_i-\mu)^2\right\vert^{{\bm \sigma^2}={\bm{\hat \sigma^2}^{(k+1)}};\bm{\hat \theta}=\bm{\hat \theta^{(k)}}}=0
+\left. \frac{dQ(\bm \theta| \hat{\bm \theta})}{d\sigma} \right\vert^{{\bm \theta}={\bm{\hat \theta}^{(k+1)}};\bm{\hat \theta}=\bm{\hat \theta^{(k)}}}=
+\left. -\frac{n}{2\sigma^2}+\frac{1}{2(\sigma^2)^2}\sum^n_{i=1}\hat u_i(y_i-\mu)^2\right\vert^{{\bm \theta}={\bm{\hat \theta}^{(k+1)}};\bm{\hat \theta}=\bm{\hat \theta^{(k)}}}=0
 </span></li>
 </ul>
 <p><span id="eq-sigma2"><span class="math display">
-\Rightarrow {\hat\sigma^2}^{(k+1)}=\frac{\sum^n_{i=1}\hat u_i^{(k)}(y_i-{\hat\mu}^{(k)})^2}{n}
+\Rightarrow {\hat\sigma^2}^{(k+1)}=\frac{\sum^n_{i=1}\hat u_i^{(k)}(y_i-{\hat\mu}^{(k+1)})^2}{n}
 \tag{2}</span></span></p>
 <p>Portanto, para <span class="math inline">\nu</span> conhecido, definimos o seguinte algoritmo:</p>
 <div class="callout callout-style-simple callout-note no-icon">
@@ -2551,7 +2555,7 @@ Q(\bm \theta| \hat{\bm \theta})&amp;=c-\frac{n \ln\sigma^2}{2}-\frac{1}{2\sigma^
 <ol type="1">
 <li><strong>Passo E</strong>: Dado <span class="math inline">\bm{\hat \theta}=\bm{\hat\theta}^{(k)}</span>, calcular:</li>
 </ol>
-<p><span class="math display">\hat u_i=\frac{\nu+1}{\nu+d^2_{Mi}(y_i,\hat\mu,\hat\sigma^2)},\quad i=1,2,...,n;</span></p>
+<p><span class="math display">\hat u_i^{(k)}=\frac{\nu+1}{\nu+d^2_{Mi}(y_i,\hat\mu^{(k)},{\hat\sigma^2}^{(k)})},\quad i=1,2,...,n;</span></p>
 <ol start="2" type="1">
 <li><strong>Passo M</strong>: Obtem-se <span class="math inline">\hat{\bm \theta}^{(k+1)}</span> que maximize a função obtida no passo anterior, tal que <span class="math display">Q(\hat{\bm \theta}^{(k+1)}| \hat{\bm \theta}^{(k)})&gt;Q(\bm \theta| \hat{\bm \theta}^{(k)})</span> Ou seja, calcula-se os pontos críticos na <a href="#eq-mu" class="quarto-xref">Equação 1</a> e <a href="#eq-sigma2" class="quarto-xref">Equação 2</a>.</li>
 </ol>
@@ -2602,47 +2606,171 @@ Q(\bm \theta| \hat{\bm \theta})&amp;=c-\frac{n \ln\sigma^2}{2}-\frac{1}{2\sigma^
 <span id="cb1-38"><a href="#cb1-38" aria-hidden="true" tabindex="-1"></a><span class="co"># chute inicial usando media e variancia amostrais</span></span>
 <span id="cb1-39"><a href="#cb1-39" aria-hidden="true" tabindex="-1"></a><span class="fu">EM</span>(<span class="fu">mean</span>(y),<span class="fu">var</span>(y))</span></code><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>Iteração  1 : muhat= 20.17445  sighat= 8.084954 
-Iteração  2 : muhat= 20.16722  sighat= 7.47649 
-Iteração  3 : muhat= 20.16546  sighat= 7.284202 
-Iteração  4 : muhat= 20.16506  sighat= 7.219811 
-Iteração  5 : muhat= 20.16497  sighat= 7.197832 
-Iteração  6 : muhat= 20.16495  sighat= 7.19028 
-Iteração  7 : muhat= 20.16495  sighat= 7.18768 
-Iteração  8 : muhat= 20.16495  sighat= 7.186783 
-Iteração  9 : muhat= 20.16495  sighat= 7.186474 
-Iteração  10 : muhat= 20.16495  sighat= 7.186368 
-Iteração  11 : muhat= 20.16495  sighat= 7.186331 </code></pre>
+<pre><code>Iteração  1 : muhat= 20.56583  sighat= 7.348837 
+Iteração  2 : muhat= 20.55525  sighat= 6.558643 
+Iteração  3 : muhat= 20.5528  sighat= 6.282506 
+Iteração  4 : muhat= 20.5522  sighat= 6.178 
+Iteração  5 : muhat= 20.55205  sighat= 6.137252 
+Iteração  6 : muhat= 20.55202  sighat= 6.121179 
+Iteração  7 : muhat= 20.55201  sighat= 6.114811 
+Iteração  8 : muhat= 20.552  sighat= 6.112282 
+Iteração  9 : muhat= 20.552  sighat= 6.111278 
+Iteração  10 : muhat= 20.552  sighat= 6.110879 
+Iteração  11 : muhat= 20.552  sighat= 6.11072 
+Iteração  12 : muhat= 20.552  sighat= 6.110657 </code></pre>
 </div>
 <div class="cell-output cell-output-stdout">
 <pre><code>       mu    sigma2 
-20.164950  7.186331 </code></pre>
+20.552002  6.110657 </code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># chute padrao</span></span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="fu">EM</span>(<span class="dv">0</span>,<span class="dv">1</span>)</span></code><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>Iteração  1 : muhat= 19.18029  sighat= 0.1581971 
-Iteração  2 : muhat= 19.31152  sighat= 0.7421386 
-Iteração  3 : muhat= 19.63403  sighat= 2.328282 
-Iteração  4 : muhat= 19.94508  sighat= 4.466605 
-Iteração  5 : muhat= 20.09568  sighat= 6.003438 
-Iteração  6 : muhat= 20.14585  sighat= 6.738821 
-Iteração  7 : muhat= 20.15998  sighat= 7.026741 
-Iteração  8 : muhat= 20.16369  sighat= 7.13065 
-Iteração  9 : muhat= 20.16464  sighat= 7.167046 
-Iteração  10 : muhat= 20.16487  sighat= 7.179661 
-Iteração  11 : muhat= 20.16493  sighat= 7.184018 
-Iteração  12 : muhat= 20.16495  sighat= 7.185521 
-Iteração  13 : muhat= 20.16495  sighat= 7.186039 
-Iteração  14 : muhat= 20.16495  sighat= 7.186218 
-Iteração  15 : muhat= 20.16495  sighat= 7.18628 </code></pre>
+<pre><code>Iteração  1 : muhat= 19.65619  sighat= 0.1446562 
+Iteração  2 : muhat= 19.93611  sighat= 0.5682816 
+Iteração  3 : muhat= 20.22882  sighat= 1.597627 
+Iteração  4 : muhat= 20.42174  sighat= 3.135219 
+Iteração  5 : muhat= 20.5108  sighat= 4.531995 
+Iteração  6 : muhat= 20.54082  sighat= 5.389674 
+Iteração  7 : muhat= 20.54917  sighat= 5.806268 
+Iteração  8 : muhat= 20.5513  sighat= 5.986607 
+Iteração  9 : muhat= 20.55183  sighat= 6.060833 
+Iteração  10 : muhat= 20.55196  sighat= 6.090751 
+Iteração  11 : muhat= 20.55199  sighat= 6.102708 
+Iteração  12 : muhat= 20.552  sighat= 6.107471 
+Iteração  13 : muhat= 20.552  sighat= 6.109366 
+Iteração  14 : muhat= 20.552  sighat= 6.110119 
+Iteração  15 : muhat= 20.552  sighat= 6.110418 
+Iteração  16 : muhat= 20.552  sighat= 6.110537 
+Iteração  17 : muhat= 20.552  sighat= 6.110585 </code></pre>
 </div>
 <div class="cell-output cell-output-stdout">
-<pre><code>      mu   sigma2 
-20.16495  7.18628 </code></pre>
+<pre><code>       mu    sigma2 
+20.552002  6.110585 </code></pre>
+</div>
+</div>
+</section>
+</section>
+<section id="extensões-do-algoritmo-em" class="level2">
+<h2 class="anchored" data-anchor-id="extensões-do-algoritmo-em">2.2 Extensões do Algoritmo EM</h2>
+<p>Note que o exemplo 2.1 foi dado sob a suposição de que <span class="math inline">\nu</span> era fixo e conhecido, pois caso contrá-rio o processo realizado não seria possível da forma que foi feito. Nem sempre a função <span class="math inline">Q</span> encon-trada terá uma expressão fechada ou computacionalmente simples, o que pode tornar o algoritmo EM inviável. Nesses casos, é possível utilizar variações do mesmo que foram formuladas para esses tipos de situação. A seguir serão apresentados as variantes ECM <span class="citation" data-cites="ecm">(<a href="#ref-ecm" role="doc-biblioref">Meng; Rubin, 1993</a>)</span> e ECME <span class="citation" data-cites="ecme">(<a href="#ref-ecme" role="doc-biblioref">Liu; Rubin, 1994</a>)</span>, classificados como GEMs, algoritmos EM generalizados:</p>
+<section id="experança-maximização-condicional-ecm" class="level3">
+<h3 class="anchored" data-anchor-id="experança-maximização-condicional-ecm">2.2.1 Experança-Maximização Condicional (ECM)</h3>
+<p>No algoritmo ECM, <span class="math inline">\bm \theta</span> é subdividido em <span class="math inline">S</span> subvetores: <span class="math inline">\bm \theta=(\bm \theta_1,...,\bm \theta_S)</span>; para que <span class="math inline">Q</span> seja, então, maximizada em relação a cada um dessas partições individualmente, com as demais fixadas em seu valor anterior. Ou seja, o passo M se divide em <span class="math inline">S</span> passos CM, gerando a seguinte formulação do algoritmo:</p>
+<div class="callout callout-style-simple callout-note no-icon">
+<div class="callout-body d-flex">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-body-container">
+<ol type="1">
+<li><p><strong>Passo E</strong>: Calcula-se <span class="math inline">Q(\bm \theta| \hat{\bm \theta}^{(k)})</span>;</p></li>
+<li><p><strong>Passos CM</strong>: Para cada <span class="math inline">i =1,...,S</span>, se faz:</p>
+<ul>
+<li>CM-i: Fixando todos os subvetores <span class="math inline">\bm {\hat\theta_j}^{(k)}</span>, <span class="math inline">j \neq i</span>, busca-se um <span class="math inline">\bm \theta_i=\bm{\hat \theta_i}^{(k+1)}</span> que maximize <span class="math inline">Q(\bm{\theta_i}| \hat{\bm \theta}_{j\neq i}^{(k)})</span>.</li>
+</ul></li>
+</ol>
+</div>
+</div>
+</div>
+<section id="exemplo-com-a-distribuição-t-student-locação-escala-1" class="level4">
+<h4 class="anchored" data-anchor-id="exemplo-com-a-distribuição-t-student-locação-escala-1">Exemplo com a distribuição T-student Locação-Escala</h4>
+<p>Considerando a situação do exemplo 2.1, mas com <span class="math inline">\nu</span> desconhecido, podemos aplicar o algoritmo ECM dividindo <span class="math inline">\bm \theta=(\bm \theta_1, \theta_2)</span>, onde <span class="math inline">\bm \theta_1=(\mu,\sigma^2)</span> e <span class="math inline">\theta_2=\nu</span>. A log-verossimilhança para <span class="math inline">\nu</span> desconhecido é como segue:</p>
+<p><span class="math display">
+l_c(\bm \theta)=
+\\
+\frac{\nu}{2}\left(\sum^n_{i=1}\log u_i-\sum^n_{i=1}u_i+ n\log (\nu/2) \right)
+-n\log\big[\Gamma(\nu/2)\big]-\frac{n}{2}\log\sigma^2-\frac{1}{2\sigma^2}\sum^n_{i=1} u_i(y_i-\mu)^2 + c(\bm u),
+</span></p>
+<p>onde <span class="math inline">c(\bm u)</span> é uma constante em relação a <span class="math inline">\bm \theta</span>. Assim, temos que a função <span class="math inline">Q</span> é:</p>
+<p><span class="math display">
+\begin{aligned}
+Q(\bm \theta| \bm{\hat\theta}^{(k)})&amp;=
+\frac{\nu}{2}\sum^n_{i=1}\left(\text E [\log u_i|\bm y, \hat \theta]-
+\text E [u_i|\bm y, \hat \theta]\right)+n\left(\frac{\nu}{2}\log(\nu/2)-\log \big[\Gamma(\nu/2)\big]\right)
+\\
+&amp;-\frac{n}{2}\log\sigma^2-\frac{1}{2\sigma^2}\sum^n_{i=1} \text E [u_i|\bm y, \hat \theta](y_i-\mu)^2
+\end{aligned}
+</span></p>
+<p><span class="math display">
+=
+\frac{\nu}{2}\sum^n_{i=1}\left(\hat\ell_i^{(k)}-\hat u_i^{(k)}\right)+n\left(\frac{\nu}{2}\log(\nu/2)-\log \big[\Gamma(\nu/2)\big]\right)-\frac{n}{2}\log\sigma^2-\frac{1}{2\sigma^2}\sum^n_{i=1} \hat u_i^{(k)}(y_i-\mu)^2,
+</span></p>
+<p>onde <span class="math inline">\hat u_i^{(k)}=\frac{\hat\nu^{(k)}+1}{\hat\nu^{(k)}+d^2_{Mi}(y_i,\hat\mu^{(k)}),{\hat\sigma^2}^{(k)})}</span> e <span class="math inline">\hat\ell_i^{(k)}</span> pode ser obtido da seguinte forma:</p>
+<div class="callout callout-style-simple callout-tip no-icon">
+<div class="callout-body d-flex">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-body-container">
+<p>Sabendo que <span class="math inline">U|Y\sim \text{Gama}\left( \frac{\nu+1}{2}, \frac{\nu+d^2_M(y,\mu,\sigma^2)}{2} \right)\in</span> família exponencial, pode-se reescrever a sua densidade da seguinte forma:</p>
+<p><span class="math display">
+f(u|y,\bm \theta)=\frac{\left[\frac{\nu+d^2_M}{2}\right]^{\frac{\nu+1}{2}}}{\Gamma\left[(\nu+1)/2\right]}
+\exp\left\{ -\frac{\nu+d^2_M}{2}u + \left[\frac{\nu+1}{2}-1\right]\log u \right\}
+</span> Tomando <span class="math inline">\eta_1=-\frac{\nu+d^2_M}{2}</span> e <span class="math inline">\eta_2=\frac{\nu+1}{2}-1</span>, temos que, na forma canônica:</p>
+<p><span class="math display">
+\begin{aligned}
+f(u|y,\bm \eta)&amp;=\frac{{-\eta_1}^{\eta_2+1}}{\Gamma\left[\eta_2+1\right]}
+\exp\left\{ \eta_1u + \eta_2\log u \right\}
+\\
+&amp;=c^*(\bm \eta)\exp\left\{ \eta_1T_1(u) + \eta_2T_2(u) \right\}
+\end{aligned}
+</span></p>
+<p>A partir do resultado <span class="math inline">\text E[T_i(x)]=-\frac{d \log c^*(\bm \eta)}{d\eta_i}</span>, temos que:</p>
+<p><span class="math display">
+\begin{aligned}
+\hat\ell&amp;=\text E [\log u|\bm y, \hat \theta]=\psi(\eta_2+1)-\log(-\eta_1)
+\\
+&amp;=\psi[(\nu+1)/2] - \log \left(\frac{\nu+d^2_M}{2}\right),
+\end{aligned}
+</span> onde <span class="math inline">\psi(\eta_2+1)=\frac{\Gamma&#39;(\eta_2+1)}{\Gamma(\eta_2+1)}</span> é a função digamma de <span class="math inline">\eta_2+1</span>.</p>
+</div>
+</div>
+</div>
+<p>O passo CM-1 seria idêntico ao passo M no exemplo 2.1, fixado um valor <span class="math inline">\nu=\hat\nu^{(k)}</span>. Para o passo CM-2, temos que achar um valor <span class="math inline">\nu^{(k+1)}</span> que seja resolução da equação:</p>
+<p><span class="math display">
+\left. \frac{dQ(\bm \theta| \hat{\bm \theta})}{d\nu} \right\vert^{\bm{\hat \theta}=\bm{\hat \theta}^{(k+1)}}=0
+</span></p>
+<p><span class="math display">
+\Rightarrow \frac{n}{2}\left[ \log(\hat\nu^{(k+1)}/2)+ 1-\psi(\hat\nu^{(k+1)}/2)+\frac{\sum^n_{i=1}(\hat\ell_i^{(k+1)}-\hat u_i^{(k+1)})}{n}\right]=0
+</span></p>
+<p><span class="math display">
+\Rightarrow \log(\hat\nu^{(k+1)}/2)+ 1-\psi(\hat\nu^{(k+1)}/2)+\frac{\sum^n_{i=1}(\hat\ell_i^{(k+1)}-\hat u_i^{(k+1)})}{n}=0,
+</span></p>
+<p>o que pode ser encontrado através de métodos numéricos. Tem-se, então, o seguinte algoritmo:</p>
+<div class="callout callout-style-simple callout-note no-icon">
+<div class="callout-body d-flex">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-body-container">
+<ul>
+<li>Passo E: Dado <span class="math inline">\bm{\hat \theta}=\bm{\hat\theta}^{(k)}</span>, calcular:</li>
+</ul>
+<p><span class="math display">\hat u_i^{(k)}=\frac{\hat\nu^{(k+1)}+1}{\hat\nu^{(k+1)}+d^2_{Mi}(y_i,\hat\mu^{(k)},{\hat\sigma^2}^{(k)})},\quad i=1,2,...,n;</span></p>
+<p><span class="math display">
+\hat\ell_i^{(k)}=\psi[(\hat\nu^{(k)}+1)/2] - \log \left(\frac{\hat\nu^{(k)}+{d^2_{Mi}}^{(k)}}{2}\right)
+</span></p>
+<ul>
+<li>Passo CM-1: Obter os seguintes pontos críticos, fixado <span class="math inline">\nu=\hat\nu^{(k)}</span>:</li>
+</ul>
+<p><span class="math display">
+\begin{aligned}
+&amp;\hat\mu^{(k+1)}=\frac{\sum^n_{i=1}\hat u_i^{(k)}y_i}{\sum^n_{i=1}\hat u_i^{(k)}}
+\\
+&amp;{\hat\sigma^2}^{(k+1)}=\frac{\sum^n_{i=1}\hat u_i^{(k)}(y_i-{\hat\mu}^{(k+1)})^2}{n}
+\end{aligned}
+</span></p>
+<ul>
+<li>Passo CM-2: Achar um valor <span class="math inline">\nu^{(k+1)}</span> que seja resolução da equação: <span class="math display">
+\log(\hat\nu^{(k+1)}/2)+ 1-\psi(\hat\nu^{(k+1)}/2)+\frac{\sum^n_{i=1}(\hat\ell_i^{(k+1)}-\hat u_i^{(k+1)})}{n}=0
+</span></li>
+</ul>
+</div>
 </div>
 </div>
 
+</section>
 </section>
 </section>
 </section>
@@ -2651,8 +2779,14 @@ Iteração  15 : muhat= 20.16495  sighat= 7.18628 </code></pre>
 <div id="ref-dempster1977" class="csl-entry" role="listitem">
 DEMPSTER, A. P.; LAIRD, N. M.; RUBIN, D. B. Maximum likelihood from incomplete data via the EM algorithm. <strong>Journal of the royal statistical society: series B (methodological)</strong>, v. 39, n. 1, p. 1–22, 1977.
 </div>
+<div id="ref-ecme" class="csl-entry" role="listitem">
+LIU, C.; RUBIN, D. B. The ECME algorithm: a simple extension of EM and ECM with faster monotone convergence. <strong>Biometrika</strong>, v. 81, n. 4, p. 633–648, 1994.
+</div>
 <div id="ref-mclachlan2008" class="csl-entry" role="listitem">
 MCLACHLAN, G. J.; KRISHNAN, T. <strong>The EM algorithm and extensions</strong>. [s.l.] John Wiley &amp; Sons, 2008.
+</div>
+<div id="ref-ecm" class="csl-entry" role="listitem">
+MENG, X.-L.; RUBIN, D. B. Maximum likelihood estimation via the ECM algorithm: A general framework. <strong>Biometrika</strong>, v. 80, n. 2, p. 267–278, 1993.
 </div>
 </div></section></div></main>
 <!-- /main column -->
