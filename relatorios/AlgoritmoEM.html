@@ -2273,9 +2273,9 @@ window.Quarto = {
 
 <body class="quarto-light">
 
-<header id="title-block-header" class="quarto-title-block default toc-left page-columns page-full">
+<header id="title-block-header" class="quarto-title-block default page-columns page-full">
   <div class="quarto-title-banner page-columns page-full">
-    <div class="quarto-title column-body">
+    <div class="quarto-title column-page-left">
       <h1 class="title">O Algoritmo EM</h1>
           </div>
 
@@ -2283,7 +2283,7 @@ window.Quarto = {
     <div class="quarto-title-meta-container">
       <div class="quarto-title-meta-column-start">
         
-        <div class="quarto-title-meta">
+        <div class="quarto-title-meta column-page-left">
 
                 <div>
             <div class="quarto-title-meta-heading">Autor</div>
@@ -2304,8 +2304,8 @@ window.Quarto = {
 
     <div class="quarto-other-links-text-target">
     </div>  </div>
-</header><div id="quarto-content" class="page-columns page-rows-contents page-layout-article toc-left">
-<div id="quarto-sidebar-toc-left" class="sidebar toc-left">
+</header><div id="quarto-content" class="page-columns page-rows-contents page-layout-full">
+<div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
   <nav id="TOC" role="doc-toc" class="toc-active" data-toc-expanded="99">
     <h2 id="toc-title">Índice</h2>
    
@@ -2323,17 +2323,22 @@ window.Quarto = {
   <li><a href="#inferência-por-meio-do-algoritmo-em" id="toc-inferência-por-meio-do-algoritmo-em" class="nav-link" data-scroll-target="#inferência-por-meio-do-algoritmo-em">Inferência por meio do Algoritmo EM</a></li>
   <li><a href="#simulação-do-exemplo" id="toc-simulação-do-exemplo" class="nav-link" data-scroll-target="#simulação-do-exemplo">Simulação do exemplo</a></li>
   </ul></li>
-  <li><a href="#extensões-do-algoritmo-em" id="toc-extensões-do-algoritmo-em" class="nav-link" data-scroll-target="#extensões-do-algoritmo-em">2.2 Extensões do Algoritmo EM</a>
+  </ul></li>
+  <li><a href="#extensões-do-algoritmo-em" id="toc-extensões-do-algoritmo-em" class="nav-link" data-scroll-target="#extensões-do-algoritmo-em">3. Extensões do Algoritmo EM</a>
   <ul class="collapse">
-  <li><a href="#experança-maximização-condicional-ecm" id="toc-experança-maximização-condicional-ecm" class="nav-link" data-scroll-target="#experança-maximização-condicional-ecm">2.2.1 Experança-Maximização Condicional (ECM)</a></li>
+  <li><a href="#experança-maximização-condicional-ecm" id="toc-experança-maximização-condicional-ecm" class="nav-link" data-scroll-target="#experança-maximização-condicional-ecm">3.1 Experança Maximização Condicional (ECM)</a>
+  <ul class="collapse">
+  <li><a href="#exemplo-com-a-distribuição-t-student-locação-escala-1" id="toc-exemplo-com-a-distribuição-t-student-locação-escala-1" class="nav-link" data-scroll-target="#exemplo-com-a-distribuição-t-student-locação-escala-1">3.1.1 Exemplo com a distribuição T-student Locação-Escala</a></li>
+  </ul></li>
+  <li><a href="#esperança-maximização-condicional-qualquer-ecme" id="toc-esperança-maximização-condicional-qualquer-ecme" class="nav-link" data-scroll-target="#esperança-maximização-condicional-qualquer-ecme">3.2 Esperança Maximização Condicional “Qualquer” (ECME)</a>
+  <ul class="collapse">
+  <li><a href="#exemplo-com-a-distribuição-t-student-locação-escala-2" id="toc-exemplo-com-a-distribuição-t-student-locação-escala-2" class="nav-link" data-scroll-target="#exemplo-com-a-distribuição-t-student-locação-escala-2">3.2.1 Exemplo com a distribuição T-student Locação-Escala</a></li>
   </ul></li>
   </ul></li>
   </ul>
 </nav>
 </div>
-<div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
-</div>
-<main class="content quarto-banner-title-block" id="quarto-document-content">
+<main class="content quarto-banner-title-block column-page-left" id="quarto-document-content">
 
 
 
@@ -2465,7 +2470,7 @@ f(t|\bm\theta)=
 </section>
 <section id="inferência-por-meio-do-algoritmo-em" class="level3">
 <h3 class="anchored" data-anchor-id="inferência-por-meio-do-algoritmo-em">Inferência por meio do Algoritmo EM</h3>
-<p>Suponha que temos uma a.a. <span class="math inline">Y_1,..,Y_n \overset{iid}{\sim} \ell st(\mu,\sigma^2,\nu)</span>, onde <span class="math inline">\nu</span> é conhecido. Logo, o vetor de parâme-tros é dado por <span class="math inline">\bm \theta=(\mu,\sigma^2)</span>. Com a intenção de obter o estimador de máxima verossimilhança para <span class="math inline">\bm \theta</span>, pode-se tentar pelo método tradicional:</p>
+<p>Suponha que temos uma a.a. <span class="math inline">Y_1,..,Y_n \overset{iid}{\sim} \ell st(\mu,\sigma^2,\nu)</span>, onde <span class="math inline">\nu</span> é conhecido. Logo, o vetor de parâmetros é dado por <span class="math inline">\bm \theta=(\mu,\sigma^2)</span>. Com a intenção de obter o estimador de máxima verossimilhança para <span class="math inline">\bm \theta</span>, pode-se tentar pelo método tradicional:</p>
 <div class="callout callout-style-simple callout-tip no-icon">
 <div class="callout-body d-flex">
 <div class="callout-icon-container">
@@ -2493,7 +2498,7 @@ S_1(\mu)=0
 S_2(\sigma^2)=0
 \end{cases},
 </span></p>
-<p>O que seria muito difícil de se fazer sem utilizar métodos iterativos (como, por exemplo, Newton-Raph-son).</p>
+<p>O que seria muito difícil de se fazer sem utilizar métodos iterativos (como, por exemplo, Newton-Raphson).</p>
 </div>
 </div>
 </div>
@@ -2606,56 +2611,30 @@ Q(\bm \theta| \hat{\bm \theta})&amp;=c-\frac{n \ln\sigma^2}{2}-\frac{1}{2\sigma^
 <span id="cb1-38"><a href="#cb1-38" aria-hidden="true" tabindex="-1"></a><span class="co"># chute inicial usando media e variancia amostrais</span></span>
 <span id="cb1-39"><a href="#cb1-39" aria-hidden="true" tabindex="-1"></a><span class="fu">EM</span>(<span class="fu">mean</span>(y),<span class="fu">var</span>(y))</span></code><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>Iteração  1 : muhat= 20.56583  sighat= 7.348837 
-Iteração  2 : muhat= 20.55525  sighat= 6.558643 
-Iteração  3 : muhat= 20.5528  sighat= 6.282506 
-Iteração  4 : muhat= 20.5522  sighat= 6.178 
-Iteração  5 : muhat= 20.55205  sighat= 6.137252 
-Iteração  6 : muhat= 20.55202  sighat= 6.121179 
-Iteração  7 : muhat= 20.55201  sighat= 6.114811 
-Iteração  8 : muhat= 20.552  sighat= 6.112282 
-Iteração  9 : muhat= 20.552  sighat= 6.111278 
-Iteração  10 : muhat= 20.552  sighat= 6.110879 
-Iteração  11 : muhat= 20.552  sighat= 6.11072 
-Iteração  12 : muhat= 20.552  sighat= 6.110657 </code></pre>
+<pre><code>Iteração  1 : muhat= 20.36033  sighat= 6.368753 
+Iteração  2 : muhat= 20.39448  sighat= 6.00794 
+Iteração  3 : muhat= 20.40652  sighat= 5.903164 
+Iteração  4 : muhat= 20.41075  sighat= 5.871111 
+Iteração  5 : muhat= 20.41222  sighat= 5.861114 
+Iteração  6 : muhat= 20.41272  sighat= 5.857967 
+Iteração  7 : muhat= 20.41289  sighat= 5.856972 
+Iteração  8 : muhat= 20.41294  sighat= 5.856655 
+Iteração  9 : muhat= 20.41296  sighat= 5.856555 
+Iteração  10 : muhat= 20.41297  sighat= 5.856522 </code></pre>
 </div>
 <div class="cell-output cell-output-stdout">
 <pre><code>       mu    sigma2 
-20.552002  6.110657 </code></pre>
-</div>
-<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># chute padrao</span></span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="fu">EM</span>(<span class="dv">0</span>,<span class="dv">1</span>)</span></code><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>Iteração  1 : muhat= 19.65619  sighat= 0.1446562 
-Iteração  2 : muhat= 19.93611  sighat= 0.5682816 
-Iteração  3 : muhat= 20.22882  sighat= 1.597627 
-Iteração  4 : muhat= 20.42174  sighat= 3.135219 
-Iteração  5 : muhat= 20.5108  sighat= 4.531995 
-Iteração  6 : muhat= 20.54082  sighat= 5.389674 
-Iteração  7 : muhat= 20.54917  sighat= 5.806268 
-Iteração  8 : muhat= 20.5513  sighat= 5.986607 
-Iteração  9 : muhat= 20.55183  sighat= 6.060833 
-Iteração  10 : muhat= 20.55196  sighat= 6.090751 
-Iteração  11 : muhat= 20.55199  sighat= 6.102708 
-Iteração  12 : muhat= 20.552  sighat= 6.107471 
-Iteração  13 : muhat= 20.552  sighat= 6.109366 
-Iteração  14 : muhat= 20.552  sighat= 6.110119 
-Iteração  15 : muhat= 20.552  sighat= 6.110418 
-Iteração  16 : muhat= 20.552  sighat= 6.110537 
-Iteração  17 : muhat= 20.552  sighat= 6.110585 </code></pre>
-</div>
-<div class="cell-output cell-output-stdout">
-<pre><code>       mu    sigma2 
-20.552002  6.110585 </code></pre>
+20.412968  5.856522 </code></pre>
 </div>
 </div>
 </section>
 </section>
-<section id="extensões-do-algoritmo-em" class="level2">
-<h2 class="anchored" data-anchor-id="extensões-do-algoritmo-em">2.2 Extensões do Algoritmo EM</h2>
-<p>Note que o exemplo 2.1 foi dado sob a suposição de que <span class="math inline">\nu</span> era fixo e conhecido, pois caso contrá-rio o processo realizado não seria possível da forma que foi feito. Nem sempre a função <span class="math inline">Q</span> encon-trada terá uma expressão fechada ou computacionalmente simples, o que pode tornar o algoritmo EM inviável. Nesses casos, é possível utilizar variações do mesmo que foram formuladas para esses tipos de situação. A seguir serão apresentados as variantes ECM <span class="citation" data-cites="ecm">(<a href="#ref-ecm" role="doc-biblioref">Meng; Rubin, 1993</a>)</span> e ECME <span class="citation" data-cites="ecme">(<a href="#ref-ecme" role="doc-biblioref">Liu; Rubin, 1994</a>)</span>, classificados como GEMs, algoritmos EM generalizados:</p>
-<section id="experança-maximização-condicional-ecm" class="level3">
-<h3 class="anchored" data-anchor-id="experança-maximização-condicional-ecm">2.2.1 Experança-Maximização Condicional (ECM)</h3>
+</section>
+<section id="extensões-do-algoritmo-em" class="level1">
+<h1>3. Extensões do Algoritmo EM</h1>
+<p>Note que o exemplo 2.1 foi dado sob a suposição de que <span class="math inline">\nu</span> era fixo e conhecido, pois caso contrário o processo realizado não seria possível da forma que foi feito. Nem sempre a função <span class="math inline">Q</span> encontrada terá uma expressão fechada ou computacionalmente simples, o que pode tornar o algoritmo EM inviável. Nesses casos, é possível utilizar variações do mesmo que foram formuladas para esses tipos de situação. A seguir serão apresentados as variantes ECM <span class="citation" data-cites="ecm">(<a href="#ref-ecm" role="doc-biblioref">Meng; Rubin, 1993</a>)</span> e ECME <span class="citation" data-cites="ecme">(<a href="#ref-ecme" role="doc-biblioref">Liu; Rubin, 1994</a>)</span>, classificados como GEMs, algoritmos EM generalizados:</p>
+<section id="experança-maximização-condicional-ecm" class="level2">
+<h2 class="anchored" data-anchor-id="experança-maximização-condicional-ecm">3.1 Experança Maximização Condicional (ECM)</h2>
 <p>No algoritmo ECM, <span class="math inline">\bm \theta</span> é subdividido em <span class="math inline">S</span> subvetores: <span class="math inline">\bm \theta=(\bm \theta_1,...,\bm \theta_S)</span>; para que <span class="math inline">Q</span> seja, então, maximizada em relação a cada um dessas partições individualmente, com as demais fixadas em seu valor anterior. Ou seja, o passo M se divide em <span class="math inline">S</span> passos CM, gerando a seguinte formulação do algoritmo:</p>
 <div class="callout callout-style-simple callout-note no-icon">
 <div class="callout-body d-flex">
@@ -2673,14 +2652,13 @@ Iteração  17 : muhat= 20.552  sighat= 6.110585 </code></pre>
 </div>
 </div>
 </div>
-<section id="exemplo-com-a-distribuição-t-student-locação-escala-1" class="level4">
-<h4 class="anchored" data-anchor-id="exemplo-com-a-distribuição-t-student-locação-escala-1">Exemplo com a distribuição T-student Locação-Escala</h4>
+<section id="exemplo-com-a-distribuição-t-student-locação-escala-1" class="level3">
+<h3 class="anchored" data-anchor-id="exemplo-com-a-distribuição-t-student-locação-escala-1">3.1.1 Exemplo com a distribuição T-student Locação-Escala</h3>
 <p>Considerando a situação do exemplo 2.1, mas com <span class="math inline">\nu</span> desconhecido, podemos aplicar o algoritmo ECM dividindo <span class="math inline">\bm \theta=(\bm \theta_1, \theta_2)</span>, onde <span class="math inline">\bm \theta_1=(\mu,\sigma^2)</span> e <span class="math inline">\theta_2=\nu</span>. A log-verossimilhança para <span class="math inline">\nu</span> desconhecido é como segue:</p>
 <p><span class="math display">
-l_c(\bm \theta)=
+l_c(\bm \theta)=\frac{\nu}{2}\left(\sum^n_{i=1}\log u_i-\sum^n_{i=1}u_i+ n\log (\nu/2) \right)-n\log\big[\Gamma(\nu/2)\big]
 \\
-\frac{\nu}{2}\left(\sum^n_{i=1}\log u_i-\sum^n_{i=1}u_i+ n\log (\nu/2) \right)
--n\log\big[\Gamma(\nu/2)\big]-\frac{n}{2}\log\sigma^2-\frac{1}{2\sigma^2}\sum^n_{i=1} u_i(y_i-\mu)^2 + c(\bm u),
+-\frac{n}{2}\log\sigma^2-\frac{1}{2\sigma^2}\sum^n_{i=1} u_i(y_i-\mu)^2 + c(\bm u),
 </span></p>
 <p>onde <span class="math inline">c(\bm u)</span> é uma constante em relação a <span class="math inline">\bm \theta</span>. Assim, temos que a função <span class="math inline">Q</span> é:</p>
 <p><span class="math display">
@@ -2747,9 +2725,9 @@ f(u|y,\bm \eta)&amp;=\frac{{-\eta_1}^{\eta_2+1}}{\Gamma\left[\eta_2+1\right]}
 <ul>
 <li>Passo E: Dado <span class="math inline">\bm{\hat \theta}=\bm{\hat\theta}^{(k)}</span>, calcular:</li>
 </ul>
-<p><span class="math display">\hat u_i^{(k)}=\frac{\hat\nu^{(k+1)}+1}{\hat\nu^{(k+1)}+d^2_{Mi}(y_i,\hat\mu^{(k)},{\hat\sigma^2}^{(k)})},\quad i=1,2,...,n;</span></p>
+<p><span class="math display">\hat u_i^{(k)}=\frac{\hat\nu^{(k)}+1}{\hat\nu^{(k)}+{d^2_{Mi}}^{(k)})},\quad i=1,2,...,n.</span></p>
 <p><span class="math display">
-\hat\ell_i^{(k)}=\psi[(\hat\nu^{(k)}+1)/2] - \log \left(\frac{\hat\nu^{(k)}+{d^2_{Mi}}^{(k)}}{2}\right)
+\hat\ell_i^{(k)}=\psi[(\hat\nu^{(k)}+1)/2] - \log \left(\frac{\hat\nu^{(k)}+{d^2_{Mi}}^{(k)}}{2}\right),\quad i=1,2,...,n;
 </span></p>
 <ul>
 <li>Passo CM-1: Obter os seguintes pontos críticos, fixado <span class="math inline">\nu=\hat\nu^{(k)}</span>:</li>
@@ -2764,13 +2742,81 @@ f(u|y,\bm \eta)&amp;=\frac{{-\eta_1}^{\eta_2+1}}{\Gamma\left[\eta_2+1\right]}
 <ul>
 <li>Passo CM-2: Achar um valor <span class="math inline">\nu^{(k+1)}</span> que seja resolução da equação: <span class="math display">
 \log(\hat\nu^{(k+1)}/2)+ 1-\psi(\hat\nu^{(k+1)}/2)+\frac{\sum^n_{i=1}(\hat\ell_i^{(k+1)}-\hat u_i^{(k+1)})}{n}=0
-</span></li>
+</span> ou seja, que maximize <span class="math inline">Q(\hat\theta_2^{(k+1)}|\bm {\hat\theta_1^{(k+1)}})</span>.</li>
+</ul>
+</div>
+</div>
+</div>
+</section>
+</section>
+<section id="esperança-maximização-condicional-qualquer-ecme" class="level2">
+<h2 class="anchored" data-anchor-id="esperança-maximização-condicional-qualquer-ecme">3.2 Esperança Maximização Condicional “Qualquer” (ECME)</h2>
+<p>Deriva-se do algoritmo ECM e emprega, além de passos CM, passos CML. A diferença entre essas sub-etapas está na função a ser maximizada: que pode ser tanto a <span class="math inline">Q</span> quanto a própria log-verossimilhança, ambas condicionadas similarmente ao visto em 3.1. Além disso, é dito ter velocidade de convergência mais rápida. O algoritmo é, então, como segue:</p>
+<div class="callout callout-style-simple callout-note no-icon">
+<div class="callout-body d-flex">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-body-container">
+<ol type="1">
+<li><p><strong>Passo E</strong>: Calcula-se <span class="math inline">Q(\bm \theta| \hat{\bm \theta}^{(k)})</span>;</p></li>
+<li><p><strong>Passos CM ou CML</strong>: Para cada <span class="math inline">i =1,...,S</span>, se faz uma das opções abaixo:</p>
+<ol type="a">
+<li>CM-i: Fixando todos os subvetores <span class="math inline">\bm {\hat\theta_j}^{(k)}</span>, <span class="math inline">j \neq i</span>, busca-se um <span class="math inline">\bm \theta_i=\bm{\hat \theta_i}^{(k+1)}</span> que maximize <span class="math inline">Q(\bm{\theta_i}| \hat{\bm \theta}_{j\neq i}^{(k)})</span>.</li>
+<li>CML-i: Fixando todos os subvetores <span class="math inline">\bm {\hat\theta_j}^{(k)}</span>, <span class="math inline">j \neq i</span>, busca-se um <span class="math inline">\bm \theta_i=\bm{\hat \theta_i}^{(k+1)}</span> que maximize <span class="math inline">l_c(\bm{\theta_i}| \hat{\bm \theta}_{j\neq i}^{(k)})</span>.</li>
+</ol></li>
+</ol>
+</div>
+</div>
+</div>
+<section id="exemplo-com-a-distribuição-t-student-locação-escala-2" class="level3">
+<h3 class="anchored" data-anchor-id="exemplo-com-a-distribuição-t-student-locação-escala-2">3.2.1 Exemplo com a distribuição T-student Locação-Escala</h3>
+<p>Baseando-se no exemplo 3.1.1, podemos substituir o segundo passo CM por um CML. Assim, reescrevendo a log-verossimilhança em função de <span class="math inline">\nu</span> temos:</p>
+<p><span class="math display">
+l_c(\nu)=
+\frac{\nu}{2}\left(\sum^n_{i=1}\log u_i-\sum^n_{i=1}u_i+ n\log (\nu/2) \right)
+-n\log\big[\Gamma(\nu/2)\big] + c(\bm u,\bm \theta_1),
+</span></p>
+<p>onde <span class="math inline">c</span> é constante em relação a <span class="math inline">\nu</span>. Logo, deseja-se encontrar o ponto crítico:</p>
+<p><span class="math display">
+\frac{dl_c(\nu)}{d\nu}=\frac{1}{2}\sum^n_{i=1}(\log u_i - u_i)+n+\frac{n\log(\nu/2)}{2}-n\psi(\nu/2)=0
+</span></p>
+<p><span class="math display">
+\Rightarrow \frac{1}{2n}\sum^n_{i=1}(\log u_i - u_i)+1+\frac{\log(\nu/2)}{2}-\psi(\nu/2)=0
+</span></p>
+<p>A partir disso, definimos o seguinte algoritmo:</p>
+<div class="callout callout-style-simple callout-note no-icon">
+<div class="callout-body d-flex">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-body-container">
+<ul>
+<li>Passo E: Dado <span class="math inline">\bm{\hat \theta}=\bm{\hat\theta}^{(k)}</span>, calcular:</li>
+</ul>
+<p><span class="math display">\hat u_i^{(k)}=\frac{\hat\nu^{(k)}+1}{\hat\nu^{(k)}+{d^2_{Mi}}^{(k)})},\quad i=1,2,...,n.</span></p>
+<p><span class="math display">
+\hat\ell_i^{(k)}=\psi[(\hat\nu^{(k)}+1)/2] - \log \left(\frac{\hat\nu^{(k)}+{d^2_{Mi}}^{(k)}}{2}\right),\quad i=1,2,...,n;
+</span></p>
+<ul>
+<li>Passo CM-1: Obter os seguintes pontos críticos, fixado <span class="math inline">\nu=\hat\nu^{(k)}</span>:</li>
+</ul>
+<p><span class="math display">
+\begin{aligned}
+&amp;\hat\mu^{(k+1)}=\frac{\sum^n_{i=1}\hat u_i^{(k)}y_i}{\sum^n_{i=1}\hat u_i^{(k)}}
+\\
+&amp;{\hat\sigma^2}^{(k+1)}=\frac{\sum^n_{i=1}\hat u_i^{(k)}(y_i-{\hat\mu}^{(k+1)})^2}{n}
+\end{aligned}
+</span></p>
+<ul>
+<li>Passo CML-2: Achar um valor <span class="math inline">\nu^{(k+1)}</span> que seja resolução da equação: <span class="math display">
+\frac{1}{2n}\sum^n_{i=1}(\log u_i - u_i)+1+\frac{\log(\nu/2)}{2}-\psi(\nu/2)=0
+</span> ou seja, que maximize <span class="math inline">l_c(\bm{\theta_2}| \hat{\bm \theta}_{1}^{(k+1)})</span>.</li>
 </ul>
 </div>
 </div>
 </div>
 
-</section>
 </section>
 </section>
 </section>

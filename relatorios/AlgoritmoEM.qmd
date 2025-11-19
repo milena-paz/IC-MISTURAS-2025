@@ -2,6 +2,7 @@
 title: "O Algoritmo EM"
 author: "Milena Paz Freitas"
 format: html
+page-layout: full
 lang: pt-BR
 title-block-banner: true
 title-block-style: manuscript
@@ -12,7 +13,6 @@ html-math-method: katex
 bibliography: "ref.bib"
 callout-appearance: "minimal"
 toc: true
-toc-location: left
 toc-expand: true
 csl: abnt.csl
 nocite: |
@@ -147,7 +147,7 @@ Além disso, se $Y \sim t_\nu$ e $T=\mu +\sigma Y$, então $T\sim \ell st(\mu,\s
 
 ### Inferência por meio do Algoritmo EM
 
-Suponha que temos uma a.a. $Y_1,..,Y_n \overset{iid}{\sim} \ell st(\mu,\sigma^2,\nu)$, onde $\nu$ é conhecido. Logo, o vetor de parâme\-tros é dado por $\bm \theta=(\mu,\sigma^2)$. Com a intenção de obter o estimador de máxima verossimilhança para $\bm \theta$, pode-se tentar pelo método tradicional:
+Suponha que temos uma a.a. $Y_1,..,Y_n \overset{iid}{\sim} \ell st(\mu,\sigma^2,\nu)$, onde $\nu$ é conhecido. Logo, o vetor de parâmetros é dado por $\bm \theta=(\mu,\sigma^2)$. Com a intenção de obter o estimador de máxima verossimilhança para $\bm \theta$, pode-se tentar pelo método tradicional:
 
 ::: {.callout-tip}
 
@@ -180,7 +180,7 @@ S_2(\sigma^2)=0
 \end{cases},
 $$
 
-O que seria muito difícil de se fazer sem utilizar métodos iterativos (como, por exemplo, Newton-Raph\-son).
+O que seria muito difícil de se fazer sem utilizar métodos iterativos (como, por exemplo, Newton-Raphson).
 :::
 
 Podemos estimar também esses parâmetros via Algoritmo EM, pensando no modelo t locação-escala da seguinte maneira:
@@ -300,17 +300,14 @@ EM <- function(muhat,sighat ){
 
 # chute inicial usando media e variancia amostrais
 EM(mean(y),var(y))
-
-# chute padrao
-EM(0,1)
 ```
 
-## 2.2 Extensões do Algoritmo EM
+# 3. Extensões do Algoritmo EM
 
-Note que o exemplo 2.1 foi dado sob a suposição de que $\nu$ era fixo e conhecido, pois caso contrá\-rio o processo realizado não seria possível da forma que foi feito. Nem sempre a função $Q$ encon\-trada terá uma expressão fechada ou computacionalmente simples, o que pode tornar o algoritmo EM inviável.
+Note que o exemplo 2.1 foi dado sob a suposição de que $\nu$ era fixo e conhecido, pois caso contrário o processo realizado não seria possível da forma que foi feito. Nem sempre a função $Q$ encontrada terá uma expressão fechada ou computacionalmente simples, o que pode tornar o algoritmo EM inviável.
 Nesses casos, é possível utilizar variações do mesmo que foram formuladas para esses tipos de situação. A seguir serão apresentados as variantes ECM [@ecm] e ECME [@ecme], classificados como GEMs, algoritmos EM generalizados:
 
-### 2.2.1 Experança-Maximização Condicional (ECM)
+## 3.1 Experança Maximização Condicional (ECM)
 
   No algoritmo ECM, $\bm \theta$ é subdividido em $S$ subvetores: $\bm \theta=(\bm \theta_1,...,\bm \theta_S)$; para que $Q$ seja, então, maximizada em relação a cada um dessas partições individualmente, com as demais fixadas em seu valor anterior. Ou seja, o passo M se divide em $S$ passos CM, gerando a seguinte formulação do algoritmo:
   
@@ -322,15 +319,14 @@ Nesses casos, é possível utilizar variações do mesmo que foram formuladas pa
     
 :::
 
-#### Exemplo com a distribuição T-student Locação-Escala
+### 3.1.1 Exemplo com a distribuição T-student Locação-Escala
 
 Considerando a situação do exemplo 2.1, mas com $\nu$ desconhecido, podemos aplicar o algoritmo ECM dividindo $\bm \theta=(\bm \theta_1, \theta_2)$, onde $\bm \theta_1=(\mu,\sigma^2)$ e $\theta_2=\nu$. A log-verossimilhança para $\nu$ desconhecido é como segue:
 
 $$
-l_c(\bm \theta)=
+l_c(\bm \theta)=\frac{\nu}{2}\left(\sum^n_{i=1}\log u_i-\sum^n_{i=1}u_i+ n\log (\nu/2) \right)-n\log\big[\Gamma(\nu/2)\big]
 \\
-\frac{\nu}{2}\left(\sum^n_{i=1}\log u_i-\sum^n_{i=1}u_i+ n\log (\nu/2) \right)
--n\log\big[\Gamma(\nu/2)\big]-\frac{n}{2}\log\sigma^2-\frac{1}{2\sigma^2}\sum^n_{i=1} u_i(y_i-\mu)^2 + c(\bm u),
+-\frac{n}{2}\log\sigma^2-\frac{1}{2\sigma^2}\sum^n_{i=1} u_i(y_i-\mu)^2 + c(\bm u),
 $$
 
 onde $c(\bm u)$ é uma constante em relação a $\bm \theta$. Assim, temos que a função $Q$ é:
@@ -403,10 +399,10 @@ o que pode ser encontrado através de métodos numéricos. Tem-se, então, o seg
 
 - Passo E: Dado $\bm{\hat \theta}=\bm{\hat\theta}^{(k)}$, calcular:
 
-$$\hat u_i^{(k)}=\frac{\hat\nu^{(k+1)}+1}{\hat\nu^{(k+1)}+d^2_{Mi}(y_i,\hat\mu^{(k)},{\hat\sigma^2}^{(k)})},\quad i=1,2,...,n;$$
+$$\hat u_i^{(k)}=\frac{\hat\nu^{(k)}+1}{\hat\nu^{(k)}+{d^2_{Mi}}^{(k)})},\quad i=1,2,...,n.$$
 
 $$
-\hat\ell_i^{(k)}=\psi[(\hat\nu^{(k)}+1)/2] - \log \left(\frac{\hat\nu^{(k)}+{d^2_{Mi}}^{(k)}}{2}\right)
+\hat\ell_i^{(k)}=\psi[(\hat\nu^{(k)}+1)/2] - \log \left(\frac{\hat\nu^{(k)}+{d^2_{Mi}}^{(k)}}{2}\right),\quad i=1,2,...,n;
 $$
 
 - Passo CM-1: Obter os seguintes pontos críticos, fixado $\nu=\hat\nu^{(k)}$:
@@ -423,5 +419,68 @@ $$
 $$
 \log(\hat\nu^{(k+1)}/2)+ 1-\psi(\hat\nu^{(k+1)}/2)+\frac{\sum^n_{i=1}(\hat\ell_i^{(k+1)}-\hat u_i^{(k+1)})}{n}=0
 $$
+ou seja, que maximize $Q(\hat\theta_2^{(k+1)}|\bm {\hat\theta_1^{(k+1)}})$.
+:::
+
+## 3.2 Esperança Maximização Condicional "Qualquer" (ECME)
+
+Deriva-se do algoritmo ECM e emprega, além de passos CM, passos CML. A diferença entre essas sub-etapas está na função a ser maximizada: que pode ser tanto a $Q$ quanto a própria log-verossimilhança, ambas condicionadas similarmente ao visto em 3.1. Além disso, é dito ter velocidade de convergência mais rápida. O algoritmo é, então, como segue:
+
+::: {.callout-note appearance="minimal"}
+1) **Passo E**: Calcula-se $Q(\bm \theta| \hat{\bm \theta}^{(k)})$;
+
+2) **Passos CM ou CML**: Para cada $i =1,...,S$, se faz uma das opções abaixo:
+    a) CM-i: Fixando todos os subvetores $\bm {\hat\theta_j}^{(k)}$, $j \neq i$, busca-se um $\bm \theta_i=\bm{\hat \theta_i}^{(k+1)}$ que maximize $Q(\bm{\theta_i}| \hat{\bm \theta}_{j\neq i}^{(k)})$.
+    b) CML-i: Fixando todos os subvetores $\bm {\hat\theta_j}^{(k)}$, $j \neq i$, busca-se um $\bm \theta_i=\bm{\hat \theta_i}^{(k+1)}$ que maximize $l_c(\bm{\theta_i}| \hat{\bm \theta}_{j\neq i}^{(k)})$.
+    
+:::
+
+### 3.2.1 Exemplo com a distribuição T-student Locação-Escala
+
+Baseando-se no exemplo 3.1.1, podemos substituir o segundo passo CM por um CML. Assim, reescrevendo a log-verossimilhança em função de $\nu$ temos:
+
+$$
+l_c(\nu)=
+\frac{\nu}{2}\left(\sum^n_{i=1}\log u_i-\sum^n_{i=1}u_i+ n\log (\nu/2) \right)
+-n\log\big[\Gamma(\nu/2)\big] + c(\bm u,\bm \theta_1),
+$$
+
+onde $c$ é constante em relação a $\nu$. Logo, deseja-se encontrar o ponto crítico:
+
+$$
+\frac{dl_c(\nu)}{d\nu}=\frac{1}{2}\sum^n_{i=1}(\log u_i - u_i)+n+\frac{n\log(\nu/2)}{2}-n\psi(\nu/2)=0
+$$
+
+$$
+\Rightarrow \frac{1}{2n}\sum^n_{i=1}(\log u_i - u_i)+1+\frac{\log(\nu/2)}{2}-\psi(\nu/2)=0
+$$
+
+A partir disso, definimos o seguinte algoritmo:
+
+::: {.callout-note}
+
+- Passo E: Dado $\bm{\hat \theta}=\bm{\hat\theta}^{(k)}$, calcular:
+
+$$\hat u_i^{(k)}=\frac{\hat\nu^{(k)}+1}{\hat\nu^{(k)}+{d^2_{Mi}}^{(k)})},\quad i=1,2,...,n.$$
+
+$$
+\hat\ell_i^{(k)}=\psi[(\hat\nu^{(k)}+1)/2] - \log \left(\frac{\hat\nu^{(k)}+{d^2_{Mi}}^{(k)}}{2}\right),\quad i=1,2,...,n;
+$$
+
+- Passo CM-1: Obter os seguintes pontos críticos, fixado $\nu=\hat\nu^{(k)}$:
+
+$$
+\begin{aligned}
+&\hat\mu^{(k+1)}=\frac{\sum^n_{i=1}\hat u_i^{(k)}y_i}{\sum^n_{i=1}\hat u_i^{(k)}}
+\\
+&{\hat\sigma^2}^{(k+1)}=\frac{\sum^n_{i=1}\hat u_i^{(k)}(y_i-{\hat\mu}^{(k+1)})^2}{n}
+\end{aligned}
+$$
+
+- Passo CML-2: Achar um valor $\nu^{(k+1)}$ que seja resolução da equação:
+$$
+\frac{1}{2n}\sum^n_{i=1}(\log u_i - u_i)+1+\frac{\log(\nu/2)}{2}-\psi(\nu/2)=0
+$$
+ou seja, que maximize $l_c(\bm{\theta_2}| \hat{\bm \theta}_{1}^{(k+1)})$.
 
 :::
