@@ -2329,10 +2329,12 @@ window.Quarto = {
   <li><a href="#experança-maximização-condicional-ecm" id="toc-experança-maximização-condicional-ecm" class="nav-link" data-scroll-target="#experança-maximização-condicional-ecm">3.1 Experança Maximização Condicional (ECM)</a>
   <ul class="collapse">
   <li><a href="#exemplo-com-a-distribuição-t-student-locação-escala-1" id="toc-exemplo-com-a-distribuição-t-student-locação-escala-1" class="nav-link" data-scroll-target="#exemplo-com-a-distribuição-t-student-locação-escala-1">3.1.1 Exemplo com a distribuição T-student Locação-Escala</a></li>
+  <li><a href="#simulação-do-exemplo-1" id="toc-simulação-do-exemplo-1" class="nav-link" data-scroll-target="#simulação-do-exemplo-1">Simulação do exemplo</a></li>
   </ul></li>
   <li><a href="#esperança-maximização-condicional-qualquer-ecme" id="toc-esperança-maximização-condicional-qualquer-ecme" class="nav-link" data-scroll-target="#esperança-maximização-condicional-qualquer-ecme">3.2 Esperança Maximização Condicional “Qualquer” (ECME)</a>
   <ul class="collapse">
   <li><a href="#exemplo-com-a-distribuição-t-student-locação-escala-2" id="toc-exemplo-com-a-distribuição-t-student-locação-escala-2" class="nav-link" data-scroll-target="#exemplo-com-a-distribuição-t-student-locação-escala-2">3.2.1 Exemplo com a distribuição T-student Locação-Escala</a></li>
+  <li><a href="#simulação-do-exemplo-2" id="toc-simulação-do-exemplo-2" class="nav-link" data-scroll-target="#simulação-do-exemplo-2">Simulação do exemplo</a></li>
   </ul></li>
   </ul></li>
   </ul>
@@ -2572,7 +2574,7 @@ Q(\bm \theta| \hat{\bm \theta})&amp;=c-\frac{n \ln\sigma^2}{2}-\frac{1}{2\sigma^
 <h3 class="anchored" data-anchor-id="simulação-do-exemplo">Simulação do exemplo</h3>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co">#fixando os parametros e tamanho amostral</span></span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>n <span class="ot">&lt;-</span> <span class="dv">30</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>n <span class="ot">&lt;-</span> <span class="dv">50</span></span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>nu <span class="ot">&lt;-</span> <span class="dv">5</span></span>
 <span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>sigma2<span class="ot">&lt;-</span> <span class="dv">6</span></span>
 <span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>mu <span class="ot">&lt;-</span> <span class="dv">20</span></span>
@@ -2611,20 +2613,23 @@ Q(\bm \theta| \hat{\bm \theta})&amp;=c-\frac{n \ln\sigma^2}{2}-\frac{1}{2\sigma^
 <span id="cb1-38"><a href="#cb1-38" aria-hidden="true" tabindex="-1"></a><span class="co"># chute inicial usando media e variancia amostrais</span></span>
 <span id="cb1-39"><a href="#cb1-39" aria-hidden="true" tabindex="-1"></a><span class="fu">EM</span>(<span class="fu">mean</span>(y),<span class="fu">var</span>(y))</span></code><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>Iteração  1 : muhat= 20.36033  sighat= 6.368753 
-Iteração  2 : muhat= 20.39448  sighat= 6.00794 
-Iteração  3 : muhat= 20.40652  sighat= 5.903164 
-Iteração  4 : muhat= 20.41075  sighat= 5.871111 
-Iteração  5 : muhat= 20.41222  sighat= 5.861114 
-Iteração  6 : muhat= 20.41272  sighat= 5.857967 
-Iteração  7 : muhat= 20.41289  sighat= 5.856972 
-Iteração  8 : muhat= 20.41294  sighat= 5.856655 
-Iteração  9 : muhat= 20.41296  sighat= 5.856555 
-Iteração  10 : muhat= 20.41297  sighat= 5.856522 </code></pre>
+<pre><code>Iteração  1 : muhat= 19.57535  sighat= 6.348708 
+Iteração  2 : muhat= 19.62632  sighat= 5.739048 
+Iteração  3 : muhat= 19.64686  sighat= 5.517276 
+Iteração  4 : muhat= 19.6553  sighat= 5.430326 
+Iteração  5 : muhat= 19.65879  sighat= 5.395228 
+Iteração  6 : muhat= 19.66023  sighat= 5.380891 
+Iteração  7 : muhat= 19.66082  sighat= 5.375006 
+Iteração  8 : muhat= 19.66107  sighat= 5.372585 
+Iteração  9 : muhat= 19.66117  sighat= 5.371588 
+Iteração  10 : muhat= 19.66121  sighat= 5.371178 
+Iteração  11 : muhat= 19.66123  sighat= 5.371009 
+Iteração  12 : muhat= 19.66123  sighat= 5.370939 
+Iteração  13 : muhat= 19.66124  sighat= 5.37091 </code></pre>
 </div>
 <div class="cell-output cell-output-stdout">
-<pre><code>       mu    sigma2 
-20.412968  5.856522 </code></pre>
+<pre><code>      mu   sigma2 
+19.66124  5.37091 </code></pre>
 </div>
 </div>
 </section>
@@ -2748,6 +2753,78 @@ f(u|y,\bm \eta)&amp;=\frac{{-\eta_1}^{\eta_2+1}}{\Gamma\left[\eta_2+1\right]}
 </div>
 </div>
 </section>
+<section id="simulação-do-exemplo-1" class="level3">
+<h3 class="anchored" data-anchor-id="simulação-do-exemplo-1">Simulação do exemplo</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co">#usando a mesma amostra do exemplo anterior(!)</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>l<span class="ot">&lt;-</span> <span class="cf">function</span>(nu,mu,sig,u,logu){</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>  nu<span class="sc">/</span><span class="dv">2</span><span class="sc">*</span>(<span class="fu">sum</span>(logu<span class="sc">-</span>u)<span class="sc">+</span>n<span class="sc">*</span><span class="fu">log</span>(nu<span class="sc">/</span><span class="dv">2</span>))<span class="sc">-</span>n<span class="sc">*</span><span class="fu">lgamma</span>(nu<span class="sc">/</span><span class="dv">2</span>)<span class="sc">-</span>n<span class="sc">/</span><span class="dv">2</span><span class="sc">*</span><span class="fu">log</span>(sig) <span class="sc">-</span> <span class="fu">sum</span>(u<span class="sc">*</span>(y<span class="sc">-</span>mu)<span class="sc">^</span><span class="dv">2</span>)<span class="sc">/</span>(<span class="dv">2</span><span class="sc">*</span>sig)</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>}<span class="co">#fim funcao logverossimilhanca (somente parte dependente de theta)</span></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a><span class="co">#funcao de checagem de criterio de parada</span></span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>crit <span class="ot">&lt;-</span> <span class="cf">function</span>(l1,nu,mu,sig,u,logu){</span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">abs</span>(l1<span class="sc">-</span><span class="fu">l</span>(nu,mu,sig,u,logu)) <span class="sc">&gt;</span> <span class="fl">1e-9</span></span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>CM2 <span class="ot">&lt;-</span> <span class="cf">function</span>(nu,mu,sig){</span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">sum</span>(<span class="fu">digamma</span>((nu<span class="sc">+</span><span class="dv">1</span>)<span class="sc">/</span><span class="dv">2</span>) <span class="sc">-</span> <span class="fu">log</span>((nu<span class="sc">+</span>(y<span class="sc">-</span>mu)<span class="sc">^</span><span class="dv">2</span><span class="sc">/</span>sig)<span class="sc">/</span><span class="dv">2</span>)<span class="sc">-</span></span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a>        (nu<span class="sc">+</span><span class="dv">1</span>)<span class="sc">/</span>(nu<span class="sc">+</span>(y<span class="sc">-</span>mu)<span class="sc">^</span><span class="dv">2</span><span class="sc">/</span>sig))<span class="sc">/</span>(<span class="dv">2</span><span class="sc">*</span>n)<span class="sc">+</span><span class="fu">log</span>(nu<span class="sc">/</span><span class="dv">2</span>)<span class="sc">/</span><span class="dv">2</span><span class="sc">-</span><span class="fu">digamma</span>(nu<span class="sc">/</span><span class="dv">2</span>)<span class="sc">+</span><span class="dv">1</span></span>
+<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a>ECM <span class="ot">&lt;-</span> <span class="cf">function</span>(nu,mu,sig){</span>
+<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a>  cont<span class="ot">&lt;-</span><span class="dv">1</span></span>
+<span id="cb4-19"><a href="#cb4-19" aria-hidden="true" tabindex="-1"></a>  l1<span class="ot">&lt;-</span><span class="dv">100</span></span>
+<span id="cb4-20"><a href="#cb4-20" aria-hidden="true" tabindex="-1"></a>  u <span class="ot">&lt;-</span> <span class="dv">1</span></span>
+<span id="cb4-21"><a href="#cb4-21" aria-hidden="true" tabindex="-1"></a>  logu <span class="ot">&lt;-</span> <span class="dv">1</span></span>
+<span id="cb4-22"><a href="#cb4-22" aria-hidden="true" tabindex="-1"></a>  <span class="cf">while</span>(<span class="fu">crit</span>(l1,nu,mu,sig,u,logu)){</span>
+<span id="cb4-23"><a href="#cb4-23" aria-hidden="true" tabindex="-1"></a>    d2 <span class="ot">&lt;-</span> (y<span class="sc">-</span>mu)<span class="sc">^</span><span class="dv">2</span><span class="sc">/</span>sig</span>
+<span id="cb4-24"><a href="#cb4-24" aria-hidden="true" tabindex="-1"></a>    <span class="co">#--------PASSO E--------#</span></span>
+<span id="cb4-25"><a href="#cb4-25" aria-hidden="true" tabindex="-1"></a>    u <span class="ot">&lt;-</span> (nu<span class="sc">+</span><span class="dv">1</span>)<span class="sc">/</span>(nu<span class="sc">+</span>d2)</span>
+<span id="cb4-26"><a href="#cb4-26" aria-hidden="true" tabindex="-1"></a>    logu <span class="ot">&lt;-</span> <span class="fu">digamma</span>((nu<span class="sc">+</span><span class="dv">1</span>)<span class="sc">/</span><span class="dv">2</span>) <span class="sc">-</span> <span class="fu">log</span>((nu<span class="sc">+</span>d2)<span class="sc">/</span><span class="dv">2</span>)</span>
+<span id="cb4-27"><a href="#cb4-27" aria-hidden="true" tabindex="-1"></a>    <span class="co">#-----------------------#</span></span>
+<span id="cb4-28"><a href="#cb4-28" aria-hidden="true" tabindex="-1"></a>    l1<span class="ot">&lt;-</span> <span class="fu">l</span>(nu,mu,sig,u,logu)</span>
+<span id="cb4-29"><a href="#cb4-29" aria-hidden="true" tabindex="-1"></a>    <span class="co">#------PASSO CM-1-------#</span></span>
+<span id="cb4-30"><a href="#cb4-30" aria-hidden="true" tabindex="-1"></a>    mu <span class="ot">&lt;-</span> <span class="fu">sum</span>(u<span class="sc">*</span>y)<span class="sc">/</span><span class="fu">sum</span>(u)</span>
+<span id="cb4-31"><a href="#cb4-31" aria-hidden="true" tabindex="-1"></a>    sig <span class="ot">&lt;-</span> <span class="fu">sum</span>(u<span class="sc">*</span>(y<span class="sc">-</span>mu)<span class="sc">^</span><span class="dv">2</span>)<span class="sc">/</span>n</span>
+<span id="cb4-32"><a href="#cb4-32" aria-hidden="true" tabindex="-1"></a>    <span class="co">#-----------------------#</span></span>
+<span id="cb4-33"><a href="#cb4-33" aria-hidden="true" tabindex="-1"></a>    <span class="co">#------PASSO CM-2-------#</span></span>
+<span id="cb4-34"><a href="#cb4-34" aria-hidden="true" tabindex="-1"></a>    nu <span class="ot">&lt;-</span> <span class="fu">uniroot</span>(CM2,</span>
+<span id="cb4-35"><a href="#cb4-35" aria-hidden="true" tabindex="-1"></a>          <span class="at">interval=</span><span class="fu">c</span>(<span class="fl">0.01</span>,<span class="dv">10</span>),</span>
+<span id="cb4-36"><a href="#cb4-36" aria-hidden="true" tabindex="-1"></a>          <span class="at">mu=</span>mu,</span>
+<span id="cb4-37"><a href="#cb4-37" aria-hidden="true" tabindex="-1"></a>          <span class="at">sig=</span>sig)<span class="sc">$</span>root</span>
+<span id="cb4-38"><a href="#cb4-38" aria-hidden="true" tabindex="-1"></a>    <span class="co">#-----------------------#</span></span>
+<span id="cb4-39"><a href="#cb4-39" aria-hidden="true" tabindex="-1"></a>    <span class="fu">cat</span>(<span class="st">&quot;Iteração &quot;</span>,cont,<span class="st">&quot;: muhat=&quot;</span>,mu,<span class="st">&quot; sigma2hat=&quot;</span>,sig,<span class="st">&quot; nuhat=&quot;</span>,nu,<span class="st">&quot;</span><span class="sc">\n</span><span class="st">&quot;</span>)</span>
+<span id="cb4-40"><a href="#cb4-40" aria-hidden="true" tabindex="-1"></a>    cont<span class="ot">&lt;-</span>cont<span class="sc">+</span><span class="dv">1</span></span>
+<span id="cb4-41"><a href="#cb4-41" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb4-42"><a href="#cb4-42" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(<span class="fu">c</span>(<span class="at">nuhat=</span>nu,<span class="at">muhat=</span>mu,<span class="at">sigmahat=</span>sig))</span>
+<span id="cb4-43"><a href="#cb4-43" aria-hidden="true" tabindex="-1"></a>}<span class="co">#fim funcao algoritmo ECM</span></span>
+<span id="cb4-44"><a href="#cb4-44" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-45"><a href="#cb4-45" aria-hidden="true" tabindex="-1"></a><span class="co"># chute inicial usando media e variancia amostrais</span></span>
+<span id="cb4-46"><a href="#cb4-46" aria-hidden="true" tabindex="-1"></a><span class="fu">ECM</span>(<span class="dv">1</span>,<span class="fu">mean</span>(y),<span class="fu">var</span>(y))</span></code><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Iteração  1 : muhat= 19.66177  sigma2hat= 5.159435  nuhat= 6.377988 
+Iteração  2 : muhat= 19.64235  sigma2hat= 5.589471  nuhat= 6.394194 
+Iteração  3 : muhat= 19.63044  sigma2hat= 5.756708  nuhat= 6.399834 
+Iteração  4 : muhat= 19.62515  sigma2hat= 5.818672  nuhat= 6.401847 
+Iteração  5 : muhat= 19.62305  sigma2hat= 5.841278  nuhat= 6.402573 
+Iteração  6 : muhat= 19.62226  sigma2hat= 5.84949  nuhat= 6.402836 
+Iteração  7 : muhat= 19.62196  sigma2hat= 5.85247  nuhat= 6.402931 
+Iteração  8 : muhat= 19.62185  sigma2hat= 5.853551  nuhat= 6.402966 
+Iteração  9 : muhat= 19.62181  sigma2hat= 5.853944  nuhat= 6.402978 
+Iteração  10 : muhat= 19.6218  sigma2hat= 5.854086  nuhat= 6.402983 
+Iteração  11 : muhat= 19.62179  sigma2hat= 5.854138  nuhat= 6.402985 
+Iteração  12 : muhat= 19.62179  sigma2hat= 5.854157  nuhat= 6.402985 
+Iteração  13 : muhat= 19.62179  sigma2hat= 5.854163  nuhat= 6.402985 
+Iteração  14 : muhat= 19.62179  sigma2hat= 5.854166  nuhat= 6.402986 
+Iteração  15 : muhat= 19.62179  sigma2hat= 5.854167  nuhat= 6.402986 </code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>    nuhat     muhat  sigmahat 
+ 6.402986 19.621791  5.854167 </code></pre>
+</div>
+</div>
+</section>
 </section>
 <section id="esperança-maximização-condicional-qualquer-ecme" class="level2">
 <h2 class="anchored" data-anchor-id="esperança-maximização-condicional-qualquer-ecme">3.2 Esperança Maximização Condicional “Qualquer” (ECME)</h2>
@@ -2814,6 +2891,67 @@ l_c(\nu)=
 </span> ou seja, que maximize <span class="math inline">l_c(\bm{\theta_2}| \hat{\bm \theta}_{1}^{(k+1)})</span>.</li>
 </ul>
 </div>
+</div>
+</div>
+</section>
+<section id="simulação-do-exemplo-2" class="level3">
+<h3 class="anchored" data-anchor-id="simulação-do-exemplo-2">Simulação do exemplo</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co">#reusando mesma amostra do exemplo 2.1 e funções de critério de parada e verossimilhança(!)</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>CML2 <span class="ot">&lt;-</span> <span class="cf">function</span>(nu,mu,sig){</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">sum</span>(<span class="fu">digamma</span>((nu<span class="sc">+</span><span class="dv">1</span>)<span class="sc">/</span><span class="dv">2</span>) <span class="sc">-</span> <span class="fu">log</span>((nu<span class="sc">+</span>(y<span class="sc">-</span>mu)<span class="sc">^</span><span class="dv">2</span><span class="sc">/</span>sig)<span class="sc">/</span><span class="dv">2</span>)<span class="sc">-</span></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>        (nu<span class="sc">+</span><span class="dv">1</span>)<span class="sc">/</span>(nu<span class="sc">+</span>(y<span class="sc">-</span>mu)<span class="sc">^</span><span class="dv">2</span><span class="sc">/</span>sig))<span class="sc">/</span>(<span class="dv">2</span><span class="sc">*</span>n)<span class="sc">+</span><span class="dv">1</span><span class="sc">+</span><span class="fu">log</span>(nu<span class="sc">/</span><span class="dv">2</span>)<span class="sc">/</span><span class="dv">2</span><span class="sc">-</span><span class="fu">digamma</span>(nu<span class="sc">/</span><span class="dv">2</span>)</span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>ECME <span class="ot">&lt;-</span> <span class="cf">function</span>(nu,mu,sig){</span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>  cont<span class="ot">&lt;-</span><span class="dv">1</span></span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>  l1<span class="ot">&lt;-</span><span class="dv">100</span></span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>  u <span class="ot">&lt;-</span> <span class="dv">1</span></span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>  logu <span class="ot">&lt;-</span> <span class="dv">1</span></span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a>  <span class="cf">while</span>(<span class="fu">crit</span>(l1,nu,mu,sig,u,logu)){</span>
+<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a>    d2 <span class="ot">&lt;-</span> (y<span class="sc">-</span>mu)<span class="sc">^</span><span class="dv">2</span><span class="sc">/</span>sig</span>
+<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a>    <span class="co">#---------PASSO E--------#</span></span>
+<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a>    u <span class="ot">&lt;-</span> (nu<span class="sc">+</span><span class="dv">1</span>)<span class="sc">/</span>(nu<span class="sc">+</span>d2)</span>
+<span id="cb7-17"><a href="#cb7-17" aria-hidden="true" tabindex="-1"></a>    logu <span class="ot">&lt;-</span> <span class="fu">digamma</span>((nu<span class="sc">+</span><span class="dv">1</span>)<span class="sc">/</span><span class="dv">2</span>) <span class="sc">-</span> <span class="fu">log</span>((nu<span class="sc">+</span>d2)<span class="sc">/</span><span class="dv">2</span>)</span>
+<span id="cb7-18"><a href="#cb7-18" aria-hidden="true" tabindex="-1"></a>    <span class="co">#------------------------#</span></span>
+<span id="cb7-19"><a href="#cb7-19" aria-hidden="true" tabindex="-1"></a>    l1<span class="ot">&lt;-</span> <span class="fu">l</span>(nu,mu,sig,u,logu)</span>
+<span id="cb7-20"><a href="#cb7-20" aria-hidden="true" tabindex="-1"></a>    <span class="co">#-------PASSO CM-1-------#</span></span>
+<span id="cb7-21"><a href="#cb7-21" aria-hidden="true" tabindex="-1"></a>    mu <span class="ot">&lt;-</span> <span class="fu">sum</span>(u<span class="sc">*</span>y)<span class="sc">/</span><span class="fu">sum</span>(u)</span>
+<span id="cb7-22"><a href="#cb7-22" aria-hidden="true" tabindex="-1"></a>    sig <span class="ot">&lt;-</span> <span class="fu">sum</span>(u<span class="sc">*</span>(y<span class="sc">-</span>mu)<span class="sc">^</span><span class="dv">2</span>)<span class="sc">/</span>n</span>
+<span id="cb7-23"><a href="#cb7-23" aria-hidden="true" tabindex="-1"></a>    <span class="co">#------PASSO CML-2-------#</span></span>
+<span id="cb7-24"><a href="#cb7-24" aria-hidden="true" tabindex="-1"></a>    nu <span class="ot">&lt;-</span> <span class="fu">uniroot</span>(CML2,</span>
+<span id="cb7-25"><a href="#cb7-25" aria-hidden="true" tabindex="-1"></a>          <span class="at">interval=</span><span class="fu">c</span>(<span class="fl">0.01</span>,<span class="dv">10</span>),</span>
+<span id="cb7-26"><a href="#cb7-26" aria-hidden="true" tabindex="-1"></a>          <span class="at">mu=</span>mu,<span class="at">sig=</span>sig)<span class="sc">$</span>root</span>
+<span id="cb7-27"><a href="#cb7-27" aria-hidden="true" tabindex="-1"></a>    <span class="co">#------------------------#</span></span>
+<span id="cb7-28"><a href="#cb7-28" aria-hidden="true" tabindex="-1"></a>    <span class="fu">cat</span>(<span class="st">&quot;Iteração &quot;</span>,cont,<span class="st">&quot;: muhat=&quot;</span>,mu,<span class="st">&quot; sigma2hat=&quot;</span>,sig,<span class="st">&quot; nuhat=&quot;</span>,nu,<span class="st">&quot;</span><span class="sc">\n</span><span class="st">&quot;</span>)</span>
+<span id="cb7-29"><a href="#cb7-29" aria-hidden="true" tabindex="-1"></a>    cont<span class="ot">&lt;-</span>cont<span class="sc">+</span><span class="dv">1</span></span>
+<span id="cb7-30"><a href="#cb7-30" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb7-31"><a href="#cb7-31" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(<span class="fu">c</span>(<span class="at">nuhat=</span>nu,<span class="at">muhat=</span>mu,<span class="at">sigmahat=</span>sig))</span>
+<span id="cb7-32"><a href="#cb7-32" aria-hidden="true" tabindex="-1"></a>}<span class="co">#fim funcao algoritmo ECME</span></span>
+<span id="cb7-33"><a href="#cb7-33" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-34"><a href="#cb7-34" aria-hidden="true" tabindex="-1"></a><span class="co"># chute inicial usando media e variancia amostrais</span></span>
+<span id="cb7-35"><a href="#cb7-35" aria-hidden="true" tabindex="-1"></a><span class="fu">ECME</span>(<span class="dv">1</span>,<span class="fu">mean</span>(y),<span class="fu">var</span>(y))</span></code><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Iteração  1 : muhat= 19.66177  sigma2hat= 5.159435  nuhat= 6.377988 
+Iteração  2 : muhat= 19.64235  sigma2hat= 5.589471  nuhat= 6.394194 
+Iteração  3 : muhat= 19.63044  sigma2hat= 5.756708  nuhat= 6.399834 
+Iteração  4 : muhat= 19.62515  sigma2hat= 5.818672  nuhat= 6.401847 
+Iteração  5 : muhat= 19.62305  sigma2hat= 5.841278  nuhat= 6.402573 
+Iteração  6 : muhat= 19.62226  sigma2hat= 5.84949  nuhat= 6.402836 
+Iteração  7 : muhat= 19.62196  sigma2hat= 5.85247  nuhat= 6.402931 
+Iteração  8 : muhat= 19.62185  sigma2hat= 5.853551  nuhat= 6.402966 
+Iteração  9 : muhat= 19.62181  sigma2hat= 5.853944  nuhat= 6.402978 
+Iteração  10 : muhat= 19.6218  sigma2hat= 5.854086  nuhat= 6.402983 
+Iteração  11 : muhat= 19.62179  sigma2hat= 5.854138  nuhat= 6.402985 
+Iteração  12 : muhat= 19.62179  sigma2hat= 5.854157  nuhat= 6.402985 
+Iteração  13 : muhat= 19.62179  sigma2hat= 5.854163  nuhat= 6.402985 
+Iteração  14 : muhat= 19.62179  sigma2hat= 5.854166  nuhat= 6.402986 
+Iteração  15 : muhat= 19.62179  sigma2hat= 5.854167  nuhat= 6.402986 </code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>    nuhat     muhat  sigmahat 
+ 6.402986 19.621791  5.854167 </code></pre>
 </div>
 </div>
 
