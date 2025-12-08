@@ -1,0 +1,22 @@
+---
+title: "Distribuição Multinomial - Inferência dos Pesos de Misturas"
+author: "Milena Paz Freitas"
+format: html
+page-layout: full
+lang: pt-BR
+title-block-banner: true
+title-block-style: manuscript
+embed-resources: true
+editor: source
+theme: sandstone
+html-math-method: katex
+bibliography: "ref.bib"
+callout-appearance: "minimal"
+toc: true
+toc-expand: true
+csl: abnt.csl
+---
+
+# A distribuição Multinomial
+
+A distribuição Multinomial se trata de uma generalização da Binomial para a existência de vários casos, ao invés do típico sucesso vs fracasso. Seja $\bm X\sim\text{Multinom}(n,\bm\theta)$ um vetor aleatório de dimensão $d$ e $\bm \theta= (\theta_1,...,\theta_d)$ 
