@@ -1,5 +1,5 @@
 ---
-title: "Distribuição Multinomial - Inferência dos Pesos de Misturas"
+title: "Distribuição Multinomial - Inferência dos Pesos"
 author: "Milena Paz Freitas"
 format: html
 page-layout: full
@@ -10,13 +10,74 @@ embed-resources: true
 editor: source
 theme: sandstone
 html-math-method: katex
-bibliography: "ref.bib"
 callout-appearance: "minimal"
 toc: true
 toc-expand: true
-csl: abnt.csl
 ---
 
 # A distribuição Multinomial
 
-A distribuição Multinomial se trata de uma generalização da Binomial para a existência de vários casos, ao invés do típico sucesso vs fracasso. Seja $\bm X\sim\text{Multinom}(n,\bm\theta)$ um vetor aleatório de dimensão $d$ e $\bm \theta= (\theta_1,...,\theta_d)$ 
+A distribuição Multinomial se trata de uma generalização da Binomial para a existência de vários resultados possíveis, ao invés do típico sucesso vs fracasso. Seja $\bm X\sim\text{Multinom}(n,\bm\theta)$ um vetor aleatório de dimensão $d$, $\bm \theta= (\theta_1,...,\theta_d)$ as probabilidades de cada resultado, e $n$ o número de experimentos; a função de probabilidade de $\bm X$ é dada por:
+
+$$
+f(x_1,x_2,...,x_d|\bm \theta)=\frac{ n!}{x_1!x_2!...x_d!}\theta_1^{x_1}\theta_2^{x_2}...\theta_d^{x_d},
+$$
+onde $\sum^d_{i=1}\theta_i=1$ e $\sum^d_{i=1}x_i=n$.
+
+Seu estudo será relevante para estimação de máxima verossimilhança dos pesos de misturas do tipo $f(\bm{x}) = \sum^n_{i=1}\omega_ig_i(\bm{x}),\quad0 \leq \omega_i \leq 1\quad \text{e  } \sum^n_{i=1}\omega_i =1$, ou seja, finitas.
+
+## Estimador de máxima verossimilhância para $\bm \theta$
+
+A partir de $f(x_1,x_2,...,x_d)$ definida acima, podemos definir a função de log-verossimilhança como segue:
+
+$$
+l(\bm \theta)\propto\sum^d_{i=1}x_i\log\theta_i.
+$$
+
+Para encontrar o EMV das proporções $\bm \theta$, devemos maximizar essa função sob a restrição de que $g(\bm \theta)=\sum^d_{i=1}\theta_i=1$. Podemos usar multiplicadores de Lagrange da forma que segue:
+
+Encontrar os valores de $\bm \theta,\lambda$ que solucionem o sistema:
+
+$$
+\begin{cases}
+\nabla l(\bm\theta) = \lambda \nabla g(\bm\theta)
+\\
+g(\bm\theta)=1
+\end{cases}
+$$
+
+Temos, então, que:
+
+- $\nabla l(\bm\theta) = \left(\frac{x_1}{\theta_1},...,\frac{x_d}{\theta_d}\right);$
+
+- $\nabla g(\bm\theta) = \left(1,\dots,1\right),$
+
+e o sistema fica da seguinte forma:
+
+$$
+  \begin{cases}
+  \frac{x_1}{\theta_1} = \lambda
+  \\
+  \vdots
+  \\
+  \frac{x_d}{\theta_d} = \lambda
+  \\
+  \sum^d_{i=1}\theta_i=1
+  \end{cases}
+$$
+
+Temos que:
+
+$$
+  \frac{x_i}{\theta_i}=\lambda \Rightarrow \frac{x_i}{\lambda}=\theta_i
+  \Rightarrow \sum^d_{i=1}\frac{x_i}{\lambda}=\sum^d_{i=1}\theta_i=1
+  \Rightarrow \sum^d_{i=1}x_i=\lambda
+$$
+
+A partir da definição da multinomial, concluimos que $\lambda=n$ e, portanto:
+
+$$
+\hat{\bm\theta}=\left(\frac{x_1}{n},...,\frac{x_d}{n}\right)
+$$
+
+é EMV de $\bm \theta$.
