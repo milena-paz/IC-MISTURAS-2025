@@ -158,11 +158,11 @@ $$
 
 onde $d^2_{Mi}=d^2_M(y_i,\mu,\sigma^2)$.
 
- $$
+$$
  \Rightarrow l(\bm \theta)= n\log [k(\nu)] - \frac{n}{2}\log(\sigma^2) -\frac{\nu+1}{2}\sum^n_{i=1}log\left(1+d^2_{Mi}\nu^{-1}\right)
- $$
+$$
  
-Cujas funções escores são dadas por:
+Cujas funções escore são dadas por:
  
 $$
 S_1(\mu)= \frac{d}{d\mu}l(\bm \theta)=\sum^n_{i=1}\left(\frac{\nu+1}{\nu +d^2_{Mi}}\right)\frac{d_{Mi}}{\sigma}
@@ -262,40 +262,40 @@ Ou seja, calcula-se os pontos críticos na @eq-mu e @eq-sigma2.
 
 ```{r}
 #fixando os parametros e tamanho amostral
-n <- 50
-nu <- 5
+n <- 300
+nu <- 2
 sigma2<- 6
 mu <- 20
 
 #gerando amostra t locacao-escala
 y <- mu+rt(n, df=nu)*sqrt(sigma2)
 
-l<- function(theta,u){
-  -n/2*log(theta[2]) - sum(u*(y-theta[1])^2)/(2*theta[2])
-}#fim funcao logverossimilhanca (somente parte dependente de theta)
+l<- function(mu,sig){
+  -n/2*log(sig)-(nu+1)/2*sum(log(1+(y-mu)^2/(sig^2*nu)))
+}#fim funcao logverossimilhanca de y
 
 #funcao de checagem de criterio de parada
-crit <- function(l1,k2,u){
-  abs(l1-l(k2,u)) > 1e-9
+crit <- function(l1,mu,sig){
+  abs(l1-l(mu,sig)) > 1e-9
 }
 
-EM <- function(muhat,sighat ){
+EM <- function(mu,sig ){
   cont<-1
   l1<-100
   u <- 1
-  while(crit(l1,c(muhat,sighat),u)){
+  while(crit(l1,mu,sig)){
     #--------PASSO E--------#
-    u <- (nu+1)/(nu+(y-muhat)^2/sighat)
+    u <- (nu+1)/(nu+(y-mu)^2/sig)
     #-----------------------#
-    l1<- l(c(muhat,sighat),u)
+    l1<- l(mu,sig)
     #--------PASSO M--------#
-    muhat <- sum(u*y)/sum(u)
-    sighat <- sum(u*(y-muhat)^2)/n
+    mu <- sum(u*y)/sum(u)
+    sig <- sum(u*(y-mu)^2)/n
     #-----------------------#
-    cat("Iteração ",cont,": muhat=",muhat," sighat=",sighat,"\n")
+    cat("Iteração ",cont,": muhat=",mu," sig2hat=",sig,"\n")
     cont<-cont+1
   }
-  return(c(mu=muhat,sigma2=sighat))
+  return(c(muhat=mu,sigma2hat=sig))
 }#fim funcao algoritmo EM
 
 # chute inicial usando media e variancia amostrais
@@ -324,10 +324,7 @@ Nesses casos, é possível utilizar variações do mesmo que foram formuladas pa
 Considerando a situação do exemplo 2.1, mas com $\nu$ desconhecido, podemos aplicar o algoritmo ECM dividindo $\bm \theta=(\bm \theta_1, \theta_2)$, onde $\bm \theta_1=(\mu,\sigma^2)$ e $\theta_2=\nu$. A log-verossimilhança para $\nu$ desconhecido é como segue:
 
 $$
-l_c(\bm \theta)=\frac{\nu}{2}\left(\sum^n_{i=1}\log u_i-\sum^n_{i=1}u_i+ n\log (\nu/2) \right)-n\log\big[\Gamma(\nu/2)\big]
-\\
--\frac{n}{2}\log\sigma^2-\frac{1}{2\sigma^2}\sum^n_{i=1} u_i(y_i-\mu)^2 + c(\bm u),
-$$
+l_c(\bm \theta)= n\log [k(\nu)] - \frac{n}{2}\log(\sigma^2) -\frac{\nu+1}{2}\sum^n_{i=1}log\left(1+d^2_{Mi}\nu^{-1}\right)$$
 
 onde $c(\bm u)$ é uma constante em relação a $\bm \theta$. Assim, temos que a função $Q$ é:
 
@@ -427,46 +424,45 @@ ou seja, que maximize $Q(\hat\theta_2^{(k+1)}|\bm {\hat\theta_1^{(k+1)}})$.
 ```{r}
 #usando a mesma amostra do exemplo anterior(!)
 
-l<- function(nu,mu,sig,u,logu){
-  nu/2*(sum(logu-u)+n*log(nu/2))-n*lgamma(nu/2)-n/2*log(sig) - sum(u*(y-mu)^2)/(2*sig)
-}#fim funcao logverossimilhanca (somente parte dependente de theta)
+l<- function(nu,mu,sig){
+n*(lgamma((nu+1)/2)-lgamma(nu/2) -log(sig*pi*nu)/2)-
+    (nu+1)/2*sum(log(1+(y-mu)^2/(sig^2*nu)))
+}#fim funcao logverossimilhanca
 
 #funcao de checagem de criterio de parada
-crit <- function(l1,nu,mu,sig,u,logu){
-  abs(l1-l(nu,mu,sig,u,logu)) > 1e-9
+crit <- function(ll,nu,mu,sig){
+  ll2 <- l(nu,mu,sig)
+  abs(ll2-ll)/(abs(ll) + 1e-8) > 1e-6
 }
 
-CM2 <- function(nu,mu,sig){
-  sum(digamma((nu+1)/2) - log((nu+(y-mu)^2/sig)/2)-
-        (nu+1)/(nu+(y-mu)^2/sig))/(2*n)+log(nu/2)/2-digamma(nu/2)+1
+CM2 <- function(nu, u, logu){
+  log(nu/2) - digamma(nu/2) + 1 + mean(logu - u)
 }
 
-ECM <- function(nu,mu,sig){
+ECM <- function(nu,mu,sig,MaxIter=50){
   cont<-1
   l1<-100
   u <- 1
   logu <- 1
-  while(crit(l1,nu,mu,sig,u,logu)){
-    d2 <- (y-mu)^2/sig
+  while(crit(l1,nu,mu,sig)&cont<=MaxIter){
     #--------PASSO E--------#
+    d2 <- (y-mu)^2/sig
     u <- (nu+1)/(nu+d2)
     logu <- digamma((nu+1)/2) - log((nu+d2)/2)
     #-----------------------#
-    l1<- l(nu,mu,sig,u,logu)
+    l1<- l(nu,mu,sig)
     #------PASSO CM-1-------#
     mu <- sum(u*y)/sum(u)
     sig <- sum(u*(y-mu)^2)/n
     #-----------------------#
     #------PASSO CM-2-------#
-    nu <- uniroot(CM2,
-          interval=c(0.01,10),
-          mu=mu,
-          sig=sig)$root
+    if(CM2(1e-3,u,logu) * CM2(100,u,logu) < 0) #criterio para que uniroot() funcione
+      nu <- uniroot(CM2, c(1e-3,100), u=u, logu=logu)$root
     #-----------------------#
-    cat("Iteração ",cont,": muhat=",mu," sigma2hat=",sig," nuhat=",nu,"\n")
+    cat("Iteração ",cont,": nuhat=",nu," muhat=",mu," sigma2hat=",sig,"\n")
     cont<-cont+1
   }
-  return(c(nuhat=nu,muhat=mu,sigmahat=sig))
+  return(c(nuhat=nu,muhat=mu,sigma2hat=sig))
 }#fim funcao algoritmo ECM
 
 # chute inicial usando media e variancia amostrais
@@ -482,28 +478,34 @@ Deriva-se do algoritmo ECM e emprega, além de passos CM, passos CML. A diferen�
 
 2) **Passos CM ou CML**: Para cada $i =1,...,S$, se faz uma das opções abaixo:
     a) CM-i: Fixando todos os subvetores $\bm {\hat\theta_j}^{(k)}$, $j \neq i$, busca-se um $\bm \theta_i=\bm{\hat \theta_i}^{(k+1)}$ que maximize $Q(\bm{\theta_i}| \hat{\bm \theta}_{j\neq i}^{(k)})$.
-    b) CML-i: Fixando todos os subvetores $\bm {\hat\theta_j}^{(k)}$, $j \neq i$, busca-se um $\bm \theta_i=\bm{\hat \theta_i}^{(k+1)}$ que maximize $l_c(\bm{\theta_i}| \hat{\bm \theta}_{j\neq i}^{(k)})$.
+    b) CML-i: Fixando todos os subvetores $\bm {\hat\theta_j}^{(k)}$, $j \neq i$, busca-se um $\bm \theta_i=\bm{\hat \theta_i}^{(k+1)}$ que maximize $l(\bm{\theta_i}| \hat{\bm \theta}_{j\neq i}^{(k)})$.
     
 :::
 
 ### 3.2.1 Exemplo com a distribuição T-student Locação-Escala
 
-Baseando-se no exemplo 3.1.1, podemos substituir o segundo passo CM por um CML. Assim, reescrevendo a log-verossimilhança em função de $\nu$ temos:
+Baseando-se no exemplo 3.1.1, podemos substituir o segundo passo CM por um CML. Assim, reescrevendo a log-verossimilhança de $Y$ em função de $\nu$ temos:
 
 $$
-l_c(\nu)=
-\frac{\nu}{2}\left(\sum^n_{i=1}\log u_i-\sum^n_{i=1}u_i+ n\log (\nu/2) \right)
--n\log\big[\Gamma(\nu/2)\big] + c(\bm u,\bm \theta_1),
+\begin{aligned}
+l(\nu)&\propto n\log [k(\nu)] -\frac{\nu+1}{2}\sum^n_{i=1}\log\left(1+d^2_{Mi}\nu^{-1}\right)
+\\
+&\propto n\log\left[\frac{\Gamma\left(\frac{\nu+1}{2}\right)}{\Gamma\left(\frac{\nu}{2}\right)\sqrt{\pi\nu}}\right]-\frac{\nu+1}{2}\sum^n_{i=1}\log\left(1+\frac{(y_i-\mu)^2}{\sigma^2\nu}\right)
+\end{aligned}
 $$
 
-onde $c$ é constante em relação a $\nu$. Logo, deseja-se encontrar o ponto crítico:
+Logo, deseja-se encontrar o ponto crítico:
 
 $$
-\frac{dl_c(\nu)}{d\nu}=\frac{1}{2}\sum^n_{i=1}(\log u_i - u_i)+n+\frac{n\log(\nu/2)}{2}-n\psi(\nu/2)=0
+\frac{dl(\nu)}{d\nu}=n/2\left\{\psi[(\nu+1)/2]-\psi(\nu/2)-\nu^{-1}\right\}-
+\frac{1}{2}\sum^n_{i=1}\log\left(1+d^2_{Mi}\nu^{-1}\right)+
+\frac{\nu+1}{2\nu}\sum^n_{i=1}\frac{d^2_{Mi}}{\nu+d^2_{Mi}}
 $$
 
 $$
-\Rightarrow \frac{1}{2n}\sum^n_{i=1}(\log u_i - u_i)+1+\frac{\log(\nu/2)}{2}-\psi(\nu/2)=0
+\Rightarrow n\left\{\psi[(\nu+1)/2]-\psi(\nu/2)-\nu^{-1}\right\}-
+\sum^n_{i=1}\log\left(1+d^2_{Mi}\nu^{-1}\right)+
+\frac{\nu+1}{\nu}\sum^n_{i=1}\frac{d^2_{Mi}}{\nu+d^2_{Mi}}=0
 $$
 
 A partir disso, definimos o seguinte algoritmo:
@@ -530,20 +532,26 @@ $$
 
 - Passo CML-2: Achar um valor $\nu^{(k+1)}$ que seja resolução da equação:
 $$
-\frac{1}{2n}\sum^n_{i=1}(\log u_i - u_i)+1+\frac{\log(\nu/2)}{2}-\psi(\nu/2)=0
+n\left\{\psi[(\nu+1)/2]-\psi(\nu/2)-\nu^{-1}\right\}-
+\sum^n_{i=1}\log\left(1+d^2_{Mi}\nu^{-1}\right)+
+\frac{\nu+1}{\nu}\sum^n_{i=1}\frac{d^2_{Mi}}{\nu+d^2_{Mi}}=0
 $$
-ou seja, que maximize $l_c(\bm{\theta_2}| \hat{\bm \theta}_{1}^{(k+1)})$.
+ou seja, que maximize $l(\bm{\theta_2}| \hat{\bm \theta}_1^{(k+1)})$.
 
 :::
 
 ### Simulação do exemplo
 
 ```{r}
-#reusando mesma amostra do exemplo 2.1 e funções de critério de parada e verossimilhança(!)
+#reusando mesma amostra do exemplo 2.1 e funções de critério de parada e verossimilhança de 3.1.1
 
 CML2 <- function(nu,mu,sig){
-  sum(digamma((nu+1)/2) - log((nu+(y-mu)^2/sig)/2)-
-        (nu+1)/(nu+(y-mu)^2/sig))/(2*n)+1+log(nu/2)/2-digamma(nu/2)
+ d2 <- (y-mu)^2/sig
+ return(
+   n*(digamma((nu+1)/2)-digamma(nu/2)-1/(nu*2))-
+     sum(log(1+d2/nu))+
+     (nu+1)/(nu^2)*sum(d2/(nu+d2))
+   )
 }
 
 ECME <- function(nu,mu,sig){
@@ -551,22 +559,23 @@ ECME <- function(nu,mu,sig){
   l1<-100
   u <- 1
   logu <- 1
-  while(crit(l1,nu,mu,sig,u,logu)){
+  while(crit(l1,nu,mu,sig)){
     d2 <- (y-mu)^2/sig
     #---------PASSO E--------#
     u <- (nu+1)/(nu+d2)
     logu <- digamma((nu+1)/2) - log((nu+d2)/2)
     #------------------------#
-    l1<- l(nu,mu,sig,u,logu)
+    l1<- l(nu,mu,sig)
     #-------PASSO CM-1-------#
     mu <- sum(u*y)/sum(u)
     sig <- sum(u*(y-mu)^2)/n
     #------PASSO CML-2-------#
-    nu <- uniroot(CML2,
-          interval=c(0.01,10),
+    if(CML2(0.001,mu,sig)*CML2(100,mu,sig)<0)
+      nu <- uniroot(CML2,
+          interval=c(0.01,100),
           mu=mu,sig=sig)$root
     #------------------------#
-    cat("Iteração ",cont,": muhat=",mu," sigma2hat=",sig," nuhat=",nu,"\n")
+    cat("Iteração ",cont,": nuhat=",nu," muhat=",mu," sigma2hat=",sig,"\n")
     cont<-cont+1
   }
   return(c(nuhat=nu,muhat=mu,sigmahat=sig))
