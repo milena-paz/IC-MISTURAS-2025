@@ -1,0 +1,52 @@
+---
+title: "Algoritmo EM em Modelos de Misturas"
+author: "Milena Paz Freitas"
+format: html
+page-layout: full
+lang: pt-BR
+title-block-banner: true
+title-block-style: manuscript
+embed-resources: true
+editor: source
+theme: sandstone
+html-math-method: katex
+bibliography: "ref.bib"
+callout-appearance: "minimal"
+toc: true
+toc-expand: true
+csl: abnt.csl
+---
+
+# 1. Formulação do Modelo como Estrutura de Dados Incompletos
+
+Como descrito por @mclachlan2008, a mistura (univariada) com $n$ dados observados $\bm y=(y_1,...,y_n)$ pode ser formulada pela composição com uma variável $\bm Z$ latente que indique a qual "grupo" cada observação pertence, de forma que os dados completos sejam $\bm{y_c}= (\bm y^\intercal,\bm z^\intercal)$. Essa formulação se inspira em um método de geração de misturas que, de acordo com @basso2010misturas, considera uma variável aleatória $\bm Z_i$ categórica e $g$-dimensional pela qual a densidade de $Y_i$ é condicionada:
+
+$$
+Z_{ij}=
+\begin{cases}
+1\text{, se } Y_i\text{ pertence ao grupo } j
+\\
+0\text{, c.c.}
+\end{cases};\quad j=1,...,g.\quad i=1,...,n.
+$$
+Ou seja, $\bm Z_i$ é multinomial com pesos $\bm p=(p_1,...,p_g)$ e tamanho $n=1$. Logo, sua função de probabilidades (marginal) é dada por: $\text{ }p(\bm z_i)= \prod^g_{j=1} p_j^{z_{ij}}$. Assim, podemos dizer que a função densidade de probabilidade de $Y_i$ condicionada por $\bm Z_i$ é:
+
+$$
+f(y_i|\bm\theta,\bm z_i)= \prod^g_{j=1}p_j^{z_{ij}}f_j(y_i|\bm \theta_j)^{z_{ij}},
+$$
+
+onde $\theta_j$ são os parâmetros de $y_i$ correspondentes ao grupo $j$ e $f_j$ as densidades componentes da mistura. A função de verossimilhança completa, considerando $Y_i$ independentes e identicamente distribuidos, seria:
+
+$$
+L_c(\bm p, \bm \theta)=\prod^n_{i=1}\prod^g_{j=1}\left[p_jf_j(y_i|\bm \theta_j)\right]^{z_{ij}}
+$$
+
+Logo:
+
+$$
+l_c(\bm p,\bm\theta)= \sum^n_{i=1}\sum^g_{j=1}z_{ij}\left[\log p_j+\log f_j(y_i|\bm \theta_j)\right]
+$$
+
+é a log-verossimilhança completa.
+
+# 2. Algoritmo EM em Modelos de Misturas
