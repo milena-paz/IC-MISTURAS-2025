@@ -44,9 +44,95 @@ $$
 Logo:
 
 $$
-l_c(\bm p,\bm\theta)= \sum^n_{i=1}\sum^g_{j=1}z_{ij}\left[\log p_j+\log f_j(y_i|\bm \theta_j)\right]
+l_c(\bm p,\bm\theta)= \sum^g_{j=1}\sum^n_{i=1}z_{ij}\left[\log p_j+\log f_j(y_i|\bm \theta_j)\right]
 $$
 
 é a log-verossimilhança completa.
 
 # 2. Algoritmo EM em Modelos de Misturas
+
+ Usando a estrutura acima, podemos aplicar o algoritmo EM ou alguma extensão do mesmo. Digamos que $\bm \Psi=(\bm p,\bm \theta)$ , a função esperança da log-verossimilhança completa condicionada em $\bm y$ é como segue:
+ 
+ $$\begin{aligned}
+ Q(\bm \Psi|\bm{\Psi^{(k)}})&=\text E [l_c(\bm \Psi)|\bm y, \bm \Psi^{(k)}]
+ \\
+ &=\sum^g_{j=1}\sum^n_{i=1}\text{E}[z_{ij}|\bm y,\bm \Psi^{(k)}]\left(\log p_j^{(k)}+\log f_j(y_i|\bm \theta_j^{(k)})\right)
+ \\
+ &=\sum^g_{j=1}\sum^n_{i=1}\hat{z}_{ij}\left(\log p_j^{(k)}+\log f_j(y_i|\bm \theta_j^{(k)})\right)
+ \end{aligned}$$
+ 
+ Onde $\hat z_{ij}$ é a probabilidade _a posteriori_ do $i$-ésimo valor observado ($y_i$) fazer parte do $j$-ésimo grupo, ou seja:
+ 
+$$
+\hat z_{ij}= \text{P}(Z_{ij}=1|\bm y,\bm \Psi) = 
+\frac{p_{j}^{(k)} f_j(y_i|\bm \theta_j^{(k)})}{\sum^g_{h=1} p_h^{(k)} f_h(y_i|\bm \theta_h^{(k)})}
+$$
+
+Considerando apenas os pesos $\bm p$ como desconhecidos, a etapa E seria encontrar esse $\hat z_{ij}$, enquanto a etapa M consistiria em obter $\hat{\bm{p}}^{(k+1)}$. Como obtido anteriormente, o estimador de máxima verossimilhança para $\bm{p}$ é $\hat{ \bm{p}}=\left(\frac{\sum^n_{i=1}z_{i1}}{n},...,\frac{\sum^n_{i=1}z_{ig}}{n}\right)$. Logo, temos para o passo M:
+
+$$
+\hat{ \bm{p}}^{(k+1)}= \left(\sum^n_{i=1}\hat{z}_{i1}/n,...,\sum^n_{i=1}\hat z_{ig}/n\right)
+$$
+
+## Exemplo 1: Mistura Normal com Duas Componentes (médias e variâncias conhecidas)
+
+Vamos gerar uma mistura gaussiana no R e usar o algoritmo EM para estimar os pesos. Usando o método de geração pela multinomial para uma mistura $0.64\mathcal{N}(160, 15) + 0.36\mathcal{N}(173, 12)$, temos os seguintes dados:
+
+```{r}
+#| fig-align: center
+#Fixando os parâmetros
+P <- c(0.64,0.36)
+mu <- c(160,173)
+sigma <- sqrt(c(15,12))
+n<- 500
+
+grupos <- t(rmultinom(n, 1, prob=P))
+y <- numeric(n)
+for(i in 1:2)
+  y[as.logical(grupos[,i])] <- rnorm(sum(grupos[,i]), mu[i],sigma[i])
+
+
+hist(y,freq=F,breaks=20, main="Histograma da mistura gerada")
+curve(P[1]*dnorm(x,mu[1],sigma[1]) + P[2]*dnorm(x,mu[2],sigma[2]),add=T,col="blue",lwd=2)
+```
+
+Agora, implementando o algoritmo EM como foi enunciado em **2**, temos:
+
+```{r}
+l <- function(p){
+  sum(log(p[1]*dnorm(y,mu[1],sigma[1])+p[2]*dnorm(y,mu[2],sigma[2])))
+}
+
+crit <- function(ll,p){
+  ll2 <- l(p)
+  abs(ll2-ll)/(abs(ll) + 1e-8) > 1e-9
+}
+
+component <- function(x,g){
+  dnorm(x,mu[g],sigma[g])
+}
+
+EM <- function(p){
+  cont<-1
+  l1<-100
+  z <- 1
+  while(crit(l1,p)){
+    #--------PASSO E--------#
+    z <- sapply(y,function(y){
+      sapply(1:2,function(j) p[j]*component(y,j)/sum(p*component(y,g=1:2)))
+    })
+    #-----------------------#
+    l1<- l(p)
+    #--------PASSO M--------#
+    p <- apply(z,1,mean)
+    #-----------------------#
+    cat("Iteração ",cont,": phat=",p,"\n")
+    cont<-cont+1
+  }
+  return(p)
+}
+
+#chute inicial de equiprobabilidade
+EM(c(0.5,0.5))
+```
+
