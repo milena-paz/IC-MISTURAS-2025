@@ -49,7 +49,7 @@ $$
 
 é a log-verossimilhança completa.
 
-# 2. Algoritmo EM em Modelos de Misturas
+# 2. Algoritmo EM em Modelos de Misturas {#sec-dois}
 
  Usando a estrutura acima, podemos aplicar o algoritmo EM ou alguma extensão do mesmo. Digamos que $\bm \Psi=(\bm p,\bm \theta)$ , a função esperança da log-verossimilhança completa condicionada em $\bm y$ é como segue:
  
@@ -74,7 +74,7 @@ $$
 \hat{ \bm{p}}^{(k+1)}= \left(\sum^n_{i=1}\hat{z}_{i1}/n,...,\sum^n_{i=1}\hat z_{ig}/n\right)
 $$
 
-## Exemplo 1: Mistura Normal com Duas Componentes (médias e variâncias conhecidas)
+## 2.1 Exemplo: Mistura Normal com Duas Componentes (médias e variâncias conhecidas)
 
 Vamos gerar uma mistura gaussiana no R e usar o algoritmo EM para estimar os pesos. Usando o método de geração pela multinomial para uma mistura $0.64\mathcal{N}(160, 15) + 0.36\mathcal{N}(173, 12)$, temos os seguintes dados:
 
@@ -96,7 +96,7 @@ hist(y,freq=F,breaks=20, main="Histograma da mistura gerada")
 curve(P[1]*dnorm(x,mu[1],sigma[1]) + P[2]*dnorm(x,mu[2],sigma[2]),add=T,col="blue",lwd=2)
 ```
 
-Agora, implementando o algoritmo EM como foi enunciado em **2**, temos:
+Agora, implementando o algoritmo EM como foi enunciado na @sec-dois, temos:
 
 ```{r}
 l <- function(p){
@@ -105,7 +105,7 @@ l <- function(p){
 
 crit <- function(ll,p){
   ll2 <- l(p)
-  abs(ll2-ll)/(abs(ll) + 1e-8) > 1e-9
+  abs(ll2-ll)/(abs(ll) + 1e-8) > 1e-7
 }
 
 component <- function(x,g){
@@ -119,7 +119,7 @@ EM <- function(p){
   while(crit(l1,p)){
     #--------PASSO E--------#
     z <- sapply(y,function(y){
-      sapply(1:2,function(j) p[j]*component(y,j)/sum(p*component(y,g=1:2)))
+      sapply(1:2,function(j) p[j]*component(y,j)/sum(p[1]*component(y,1),p[2]*component(y,2)))
     })
     #-----------------------#
     l1<- l(p)
@@ -134,5 +134,107 @@ EM <- function(p){
 
 #chute inicial de equiprobabilidade
 EM(c(0.5,0.5))
+```
+
+## 2.2. Exemplo: Mistura Normal com Duas Componentes (médias e variâncias desconhecidas)
+
+Suponhamos que seja a mesma mistura em 2.1, mas dessa vez não se sabe os parâmetros das componentes (apenas o número de componentes). O passo E segue idêntico, mas agora o passo M envolve encontrar os estimadores de máxima verossimilhança de $\mu_1, \mu_2$ e $\sigma^2_1,\sigma^2_2$:
+
+$$
+l_c(\bm \Psi)=
+\sum^g_{j=1}\sum^n_{i=1}z_{ij}\left\{\log p_j-\frac{1}{2}\left[\log\sigma^2_j-\frac{(y_i-\mu_j)^2}{\sigma^2_j}\right]+c\right\},
+$$
+
+onde $c$ é uma constante em relação a $\bm \Psi=(\bm p,\bm \mu,\bm \sigma)$. Logo, temos que:
+
+$$
+\begin{aligned}
+Q(\bm \Psi|\bm{\Psi^{(k)}})&=\text E [l_c(\bm \Psi)|\bm y, \bm \Psi^{(k)}]
+\\
+&=\sum^g_{j=1}\sum^n_{i=1}\hat z_{ij}\left\{\log p_j-\frac{1}{2}\left[\log\sigma^2_j+\frac{(y_i-\mu_j)^2}{\sigma^2_j}\right]+c\right\}
+\end{aligned}
+$$
+
+Logo, para o passo M:
+
+$$
+\frac{dQ(\bm \Psi|\bm{\Psi^{(k)}})}{d\mu_j}=\sum^n_{i=1}\hat z_{ij}\frac{(y_i-\mu_j)}{\sigma^2_j}
+$$
+
+$$
+\Rightarrow \frac{\sum^n_{i=1}z_{ij}^{(k)}(y_i-\mu_j^{(k+1)})}{{\sigma^2_j}^{(k)}}=0
+\Rightarrow \sum^n_{i=1}\hat z_{ij}^{(k)}y_i=\sum^n_{i=1}\hat z_{ij}^{(k)}\mu_j^{(k+1)}
+$$
+
+$$
+\Rightarrow
+\mu_j^{(k+1)}=\frac{\sum^n_{i=1}\hat z_{ij}^{(k)}y_i}{\sum^n_{i=1}\hat z_{ij}^{(k)}}
+$$ {#eq-mu}
+
+$$
+\frac{dQ(\bm \Psi|\bm{\Psi^{(k)}})}{d\sigma^2_j}=
+\sum^n_{i=1}z_{ij}\left[-\frac{1}{2\sigma^2_j}+\frac{(y_i-\mu_j)^2}{2({\sigma^2_j})^2}\right]
+$$
+
+$$
+\Rightarrow \sum^n_{i=1}z_{ij}^{(k)}\left[-\frac{1}{2{\sigma^2_j}^{(k+1)}}+\frac{(y_i-\mu_j^{(k+ 1)})^2}{2({\sigma^2_j}^{(k+1)})^2}\right]=0\Rightarrow
+\frac{\sum^n_{i=1}z_{ij}^{(k)}(y_i-\mu_j^{(k+1)})^2}{{\sigma^2_j}^{(k+1)}}=\sum^n_{i=1}z_{ij}^{(k)}
+$$
+
+$$
+\Rightarrow {\sigma^2_j}^{(k+1)}=\frac{\sum^n_{i=1}z_{ij}^{(k)}(y_i-\mu_j^{(k)})^2}{\sum^n_{i=1}z_{ij}^{(k)}}
+$$ {#eq-sigma}
+
+Assim temos o seguinte algoritmo:
+
+::: {.callout-note}
+1) **Passo E**: Calcula-se $\hat z_{ij}=\frac{p_{j}^{(k)} f_j(y_i|\mu_j^{(k)},{\sigma_j^2}^{(k)})}{\sum^g_{h=1} p_h^{(k)}f_h(y_i|\mu_j^{(k)},{\sigma_j^2}^{(k)})}$;
+
+2) **Passo M**: Obtem-se $\bm \mu^{(k+1)},\bm {\sigma^2}^{(k+1)}$ que maximizem a função $Q$, ou seja, calculam-se os pontos críticos da @eq-mu e @eq-sigma.
+
+3) Verifica-se se o critério de parada. Caso seja falso, retorna-se ao passo 1.
+:::
+
+```{r}
+#usando os mesmos dados do exemplo 2.1
+l <- function(p,mu,sigma){
+  sum(log(p[1]*dnorm(y,mu[1],sigma[1])+p[2]*dnorm(y,mu[2],sigma[2])))
+}
+
+crit <- function(ll,p,mu,sig){
+  ll2 <- l(p,mu,sig)
+  abs(ll2-ll)/(abs(ll) + 1e-8) > 1e-6
+}
+
+component <- function(x,mu,sig,g){
+  dnorm(x,mu[g],sqrt(sig[g]))
+}
+
+EM <- function(p,mu,sig){
+  cont<-1
+  l1<-100
+  z <- 1
+  while(crit(l1,p,mu,sig)){
+    #--------PASSO E--------#
+    z <- sapply(y,function(y){
+      sapply(1:2,function(j) p[j]*component(y,mu,sig,j)/sum(p[1]*component(y,mu,sig,1),
+                                                            p[2]*component(y,mu,sig,2)))
+    })
+    #-----------------------#
+    l1<- l(p,mu,sig)
+    #--------PASSO M--------#
+    p <- apply(z,1,mean)
+    mu <- apply(z,1,function(z) sum(z*y)/sum(z))
+    sig <- sapply(1:2, function(j)
+      sum(z[j,]*(y-mu[j])^2)/sum(z[j,]))
+    #-----------------------#
+    cat("Iteração ",cont,": phat=",p," muhat= ", mu,"sigma2hat", sig,"\n")
+    cont<-cont+1
+  }
+  return(cbind(p,mu,sig))
+}
+
+#chute baseado no histograma
+EM(c(0.3,0.7),c(175,158),c(10,10))
 ```
 
