@@ -307,7 +307,7 @@ EM(mean(y),var(y))
 Note que o exemplo 2.1 foi dado sob a suposição de que $\nu$ era fixo e conhecido, pois caso contrário o processo realizado não seria possível da forma que foi feito. Nem sempre a função $Q$ encontrada terá uma expressão fechada ou computacionalmente simples, o que pode tornar o algoritmo EM inviável.
 Nesses casos, é possível utilizar variações do mesmo que foram formuladas para esses tipos de situação. A seguir serão apresentados as variantes ECM [@ecm] e ECME [@ecme], classificados como GEMs, algoritmos EM generalizados:
 
-## 3.1 Experança Maximização Condicional (ECM)
+## 3.1 Esperança Maximização Condicional (ECM)
 
   No algoritmo ECM, $\bm \theta$ é subdividido em $S$ subvetores: $\bm \theta=(\bm \theta_1,...,\bm \theta_S)$; para que $Q$ seja, então, maximizada em relação a cada um dessas partições individualmente, com as demais fixadas em seu valor anterior. Ou seja, o passo M se divide em $S$ passos CM, gerando a seguinte formulação do algoritmo:
   
@@ -396,7 +396,7 @@ o que pode ser encontrado através de métodos numéricos. Tem-se, então, o seg
 
 - Passo E: Dado $\bm{\hat \theta}=\bm{\hat\theta}^{(k)}$, calcular:
 
-$$\hat u_i^{(k)}=\frac{\hat\nu^{(k)}+1}{\hat\nu^{(k)}+{d^2_{Mi}}^{(k)})},\quad i=1,2,...,n.$$
+$$\hat u_i^{(k)}=\frac{\hat\nu^{(k)}+1}{(\hat\nu^{(k)}+{d^2_{Mi}}^{(k)})},\quad i=1,2,...,n.$$
 
 $$
 \hat\ell_i^{(k)}=\psi[(\hat\nu^{(k)}+1)/2] - \log \left(\frac{\hat\nu^{(k)}+{d^2_{Mi}}^{(k)}}{2}\right),\quad i=1,2,...,n;

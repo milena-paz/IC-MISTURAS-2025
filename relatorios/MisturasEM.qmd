@@ -9,13 +9,19 @@ title-block-style: manuscript
 embed-resources: true
 editor: source
 theme: sandstone
-html-math-method: katex
 bibliography: "ref.bib"
 callout-appearance: "minimal"
 toc: true
 toc-expand: true
 csl: abnt.csl
 ---
+
+:::{.hidden}
+$$
+\newcommand{\k}[1]{^{(#1)}}
+\newcommand{\bm}[1]{\boldsymbol{#1}}
+$$
+:::
 
 # 1. Formulação do Modelo como Estrutura de Dados Incompletos
 
@@ -54,24 +60,24 @@ $$
  Usando a estrutura acima, podemos aplicar o algoritmo EM ou alguma extensão do mesmo. Digamos que $\bm \Psi=(\bm p,\bm \theta)$ , a função esperança da log-verossimilhança completa condicionada em $\bm y$ é como segue:
  
  $$\begin{aligned}
- Q(\bm \Psi|\bm{\Psi^{(k)}})&=\text E [l_c(\bm \Psi)|\bm y, \bm \Psi^{(k)}]
+ Q(\bm \Psi|\bm{\Psi\k{k}})&=\text E [l_c(\bm \Psi)|\bm y, \bm \Psi\k{k}]
  \\
- &=\sum^g_{j=1}\sum^n_{i=1}\text{E}[z_{ij}|\bm y,\bm \Psi^{(k)}]\left(\log p_j^{(k)}+\log f_j(y_i|\bm \theta_j^{(k)})\right)
+ &=\sum^g_{j=1}\sum^n_{i=1}\text{E}[z_{ij}|\bm y,\bm \Psi\k{k}]\left(\log p_j\k{k}+\log f_j(y_i|\bm \theta_j\k{k})\right)
  \\
- &=\sum^g_{j=1}\sum^n_{i=1}\hat{z}_{ij}\left(\log p_j^{(k)}+\log f_j(y_i|\bm \theta_j^{(k)})\right)
+ &=\sum^g_{j=1}\sum^n_{i=1}\hat{z}_{ij}\left(\log p_j\k{k}+\log f_j(y_i|\bm \theta_j\k{k})\right)
  \end{aligned}$$
  
  Onde $\hat z_{ij}$ é a probabilidade _a posteriori_ do $i$-ésimo valor observado ($y_i$) fazer parte do $j$-ésimo grupo, ou seja:
  
 $$
 \hat z_{ij}= \text{P}(Z_{ij}=1|\bm y,\bm \Psi) = 
-\frac{p_{j}^{(k)} f_j(y_i|\bm \theta_j^{(k)})}{\sum^g_{h=1} p_h^{(k)} f_h(y_i|\bm \theta_h^{(k)})}
+\frac{p_{j}\k{k} f_j(y_i|\bm \theta_j\k{k})}{\sum^g_{h=1} p_h\k{k} f_h(y_i|\bm \theta_h\k{k})}
 $$
 
-Considerando apenas os pesos $\bm p$ como desconhecidos, a etapa E seria encontrar esse $\hat z_{ij}$, enquanto a etapa M consistiria em obter $\hat{\bm{p}}^{(k+1)}$. Como obtido anteriormente, o estimador de máxima verossimilhança para $\bm{p}$ é $\hat{ \bm{p}}=\left(\frac{\sum^n_{i=1}z_{i1}}{n},...,\frac{\sum^n_{i=1}z_{ig}}{n}\right)$. Logo, temos para o passo M:
+Considerando apenas os pesos $\bm p$ como desconhecidos, a etapa E seria encontrar esse $\hat z_{ij}$, enquanto a etapa M consistiria em obter $\hat{\bm{p}}\k{k+1}$. Como obtido anteriormente, o estimador de máxima verossimilhança para $\bm{p}$ é $\hat{ \bm{p}}=\left(\frac{\sum^n_{i=1}z_{i1}}{n},...,\frac{\sum^n_{i=1}z_{ig}}{n}\right)$. Logo, temos para o passo M:
 
 $$
-\hat{ \bm{p}}^{(k+1)}= \left(\sum^n_{i=1}\hat{z}_{i1}/n,...,\sum^n_{i=1}\hat z_{ig}/n\right)
+\hat{ \bm{p}}\k{k+1}= \left(\sum^n_{i=1}\hat{z}_{i1}/n,...,\sum^n_{i=1}\hat z_{ig}/n\right)
 $$
 
 ## 2.1 Exemplo: Mistura Normal com Duas Componentes (médias e variâncias conhecidas)
@@ -149,7 +155,7 @@ onde $c$ é uma constante em relação a $\bm \Psi=(\bm p,\bm \mu,\bm \sigma)$. 
 
 $$
 \begin{aligned}
-Q(\bm \Psi|\bm{\Psi^{(k)}})&=\text E [l_c(\bm \Psi)|\bm y, \bm \Psi^{(k)}]
+Q(\bm \Psi|\bm{\Psi\k{k}})&=\text E [l_c(\bm \Psi)|\bm y, \bm \Psi\k{k}]
 \\
 &=\sum^g_{j=1}\sum^n_{i=1}\hat z_{ij}\left\{\log p_j-\frac{1}{2}\left[\log\sigma^2_j+\frac{(y_i-\mu_j)^2}{\sigma^2_j}\right]+c\right\}
 \end{aligned}
@@ -158,39 +164,39 @@ $$
 Logo, para o passo M:
 
 $$
-\frac{dQ(\bm \Psi|\bm{\Psi^{(k)}})}{d\mu_j}=\sum^n_{i=1}\hat z_{ij}\frac{(y_i-\mu_j)}{\sigma^2_j}
+\frac{dQ(\bm \Psi|\bm{\Psi\k{k}})}{d\mu_j}=\sum^n_{i=1}\hat z_{ij}\frac{(y_i-\mu_j)}{\sigma^2_j}
 $$
 
 $$
-\Rightarrow \frac{\sum^n_{i=1}z_{ij}^{(k)}(y_i-\mu_j^{(k+1)})}{{\sigma^2_j}^{(k)}}=0
-\Rightarrow \sum^n_{i=1}\hat z_{ij}^{(k)}y_i=\sum^n_{i=1}\hat z_{ij}^{(k)}\mu_j^{(k+1)}
+\Rightarrow \frac{\sum^n_{i=1}z_{ij}\k{k}(y_i-\mu_j\k{k+1})}{{\sigma^2_j}\k{k}}=0
+\Rightarrow \sum^n_{i=1}\hat z_{ij}\k{k}y_i=\sum^n_{i=1}\hat z_{ij}\k{k}\mu_j\k{k+1}
 $$
 
 $$
 \Rightarrow
-\mu_j^{(k+1)}=\frac{\sum^n_{i=1}\hat z_{ij}^{(k)}y_i}{\sum^n_{i=1}\hat z_{ij}^{(k)}}
+\mu_j\k{k+1}=\frac{\sum^n_{i=1}\hat z_{ij}\k{k}y_i}{\sum^n_{i=1}\hat z_{ij}\k{k}}
 $$ {#eq-mu}
 
 $$
-\frac{dQ(\bm \Psi|\bm{\Psi^{(k)}})}{d\sigma^2_j}=
+\frac{dQ(\bm \Psi|\bm{\Psi\k{k}})}{d\sigma^2_j}=
 \sum^n_{i=1}z_{ij}\left[-\frac{1}{2\sigma^2_j}+\frac{(y_i-\mu_j)^2}{2({\sigma^2_j})^2}\right]
 $$
 
 $$
-\Rightarrow \sum^n_{i=1}z_{ij}^{(k)}\left[-\frac{1}{2{\sigma^2_j}^{(k+1)}}+\frac{(y_i-\mu_j^{(k+ 1)})^2}{2({\sigma^2_j}^{(k+1)})^2}\right]=0\Rightarrow
-\frac{\sum^n_{i=1}z_{ij}^{(k)}(y_i-\mu_j^{(k+1)})^2}{{\sigma^2_j}^{(k+1)}}=\sum^n_{i=1}z_{ij}^{(k)}
+\Rightarrow \sum^n_{i=1}z_{ij}\k{k}\left[-\frac{1}{2{\sigma^2_j}\k{k+1}}+\frac{(y_i-\mu_j^{(k+ 1)})^2}{2({\sigma^2_j}\k{k+1})^2}\right]=0\Rightarrow
+\frac{\sum^n_{i=1}z_{ij}\k{k}(y_i-\mu_j\k{k+1})^2}{{\sigma^2_j}\k{k+1}}=\sum^n_{i=1}z_{ij}\k{k}
 $$
 
 $$
-\Rightarrow {\sigma^2_j}^{(k+1)}=\frac{\sum^n_{i=1}z_{ij}^{(k)}(y_i-\mu_j^{(k)})^2}{\sum^n_{i=1}z_{ij}^{(k)}}
+\Rightarrow {\sigma^2_j}\k{k+1}=\frac{\sum^n_{i=1}z_{ij}\k{k}(y_i-\mu_j\k{k})^2}{\sum^n_{i=1}z_{ij}\k{k}}
 $$ {#eq-sigma}
 
 Assim temos o seguinte algoritmo:
 
 ::: {.callout-note}
-1) **Passo E**: Calcula-se $\hat z_{ij}=\frac{p_{j}^{(k)} f_j(y_i|\mu_j^{(k)},{\sigma_j^2}^{(k)})}{\sum^g_{h=1} p_h^{(k)}f_h(y_i|\mu_j^{(k)},{\sigma_j^2}^{(k)})}$;
+1) **Passo E**: Calcula-se $\hat z_{ij}=\frac{p_{j}\k{k} f_j(y_i|\mu_j\k{k},{\sigma_j^2}\k{k})}{\sum^g_{h=1} p_h\k{k}f_h(y_i|\mu_j\k{k},{\sigma_j^2}\k{k})},\quad i=1,...,n\quad j=1,...,g$;
 
-2) **Passo M**: Obtem-se $\bm \mu^{(k+1)},\bm {\sigma^2}^{(k+1)}$ que maximizem a função $Q$, ou seja, calculam-se os pontos críticos da @eq-mu e @eq-sigma.
+2) **Passo M**: Obtem-se $\bm \mu\k{k+1},{\bm{\sigma^2}}\k{k}$ que maximizem a função $Q$, ou seja, calculam-se os pontos críticos da @eq-mu e @eq-sigma.
 
 3) Verifica-se se o critério de parada. Caso seja falso, retorna-se ao passo 1.
 :::
@@ -238,3 +244,36 @@ EM <- function(p,mu,sig){
 EM(c(0.3,0.7),c(175,158),c(10,10))
 ```
 
+## 2.3. Exemplo: Mistura T de Student com graus de liberdade desconhecidos.
+
+Suponhamos que haja uma mistura $p_1t(\mu_1,\sigma_1,\nu_1)+p_2t(\mu_2,\sigma_2,\nu_2)$. @mclachlan2008 apresenta uma implementação do algoritmo ECM para estimação de misturas t-Student que realiza uma decomposição similar ao exemplo do documento ``AlgoritmoEM.html``. Assim, a t de Student é escrita como $Y_i = \mu + U^{-1/2}Z$, onde $Z\sim N(0,\sigma^2) \perp\!\!\!\perp U\sim \text{Gama}(\nu/2,\nu/2)$ e o conjunto de parâmetros é subdividido como $\bm\Psi=(\bm p,\bm\theta_1,\bm\theta_2)$, onde $\bm\theta_1=(\bm\mu,\bm\sigma^2)$ e $\bm\theta_2=\bm\nu$. Assim, temos que a função $Q$ também pode ser subdividida como:
+
+$$
+Q(\bm \Psi|\bm{\Psi\k{k}})=Q_1(\bm p|\bm{\Psi\k{k}})+Q_2(\bm\theta_1|\bm{\Psi\k{k}})+Q_3(\bm\theta_2|\bm{\Psi\k{k}}),
+$$
+onde:
+
+$$
+\begin{aligned}
+Q_1(\bm p|\bm{\Psi\k{k}})&=\sum^n_{i=1}\sum^g_{j=1}\hat z_{ij}p_{j}
+\\
+Q_2(\bm\theta_1|\bm{\Psi\k{k}})&=
+\end{aligned}
+$$
+O algoritmo é:
+
+::: {.callout-note}
+1) **Passo E**: Calcula-se:
+$$
+\hat z_{ij}=\frac{p_{j}\k{k} f_j(y_i|\mu_j\k{k}, {\sigma_j^2}\k{k}, \nu_j\k{k})}{\sum^g_{h=1} p_h\k{k}f_h(y_i|\mu_j\k{k},{\sigma_j^2}\k{k},\nu_j\k{k})},\quad i=1,...,n\quad j=1,...,g;
+$$
+$$
+\hat u_{ij}^{(k)}=\frac{\hat\nu^{(k)}+1}{\hat\nu^{(k)}+d^2_{Mij}(y_i,\mu_j\k k,{\sigma_j^2}\k k)},\quad i=1,2,...,n.
+$$
+
+2) **Passo CM-1**: Obtém-se $\bm\theta_1\k{k+1}$ maximizando $Q(\bm\Psi|\bm\Psi\k{k})$ com $\bm\theta_2$ fixado, ou seja, com $\bm\nu=\bm\nu\k{k}$.
+
+3 **Passo CM-1**: Obtém-se $\bm\theta_2\k{k+1}$ maximizando $Q(\bm\Psi|\bm\Psi\k{k})$ com $\bm\theta_1=\bm\theta_1\k{k+1}$ fixado.
+
+3) Verifica-se se o critério de parada. Caso seja falso, retorna-se ao passo 1.
+:::
