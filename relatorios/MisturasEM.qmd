@@ -102,6 +102,8 @@ hist(y,freq=F,breaks=20, main="Histograma da mistura gerada")
 curve(P[1]*dnorm(x,mu[1],sigma[1]) + P[2]*dnorm(x,mu[2],sigma[2]),add=T,col="blue",lwd=2)
 ```
 
+#### Simulação
+
 Agora, implementando o algoritmo EM como foi enunciado na @sec-dois, temos:
 
 ```{r}
@@ -201,6 +203,8 @@ Assim temos o seguinte algoritmo:
 3) Verifica-se se o critério de parada. Caso seja falso, retorna-se ao passo 1.
 :::
 
+#### Simulação
+
 ```{r}
 #usando os mesmos dados do exemplo 2.1
 l <- function(p,mu,sigma){
@@ -246,7 +250,7 @@ EM(c(0.3,0.7),c(175,158),c(10,10))
 
 ## 2.3. Exemplo: Mistura T de Student com graus de liberdade desconhecidos.
 
-Suponhamos que haja uma mistura $p_1t(\mu_1,\sigma_1,\nu_1)+p_2t(\mu_2,\sigma_2,\nu_2)$. @mclachlan2008 apresenta uma implementação do algoritmo ECM para estimação de misturas t-Student que realiza uma decomposição similar ao exemplo do documento ``AlgoritmoEM.html``. Assim, a t de Student é escrita como $Y_i = \mu + U^{-1/2}Z$, onde $Z\sim N(0,\sigma^2) \perp\!\!\!\perp U\sim \text{Gama}(\nu/2,\nu/2)$ e o conjunto de parâmetros é subdividido como $\bm\Psi=(\bm p,\bm\theta_1,\bm\theta_2)$, onde $\bm\theta_1=(\bm\mu,\bm\sigma^2)$ e $\bm\theta_2=\bm\nu$. Assim, temos que a função $Q$ também pode ser subdividida como:
+Suponhamos que haja uma mistura $p_1t(\mu_1,\sigma_1,\nu_1)+\dots+p_gt(\mu_g,\sigma_g,\nu_g)$. @mclachlan2008 apresenta uma implementação do algoritmo ECM para estimação de misturas t-Student que realiza uma decomposição similar ao exemplo do documento ``AlgoritmoEM.html``. Assim, a t de Student é escrita como $Y_i = \mu + U^{-1/2}Z$, onde $Z\sim N(0,\sigma^2) \perp\!\!\!\perp U\sim \text{Gama}(\nu/2,\nu/2)$ e o conjunto de parâmetros é subdividido como $\bm\Psi=(\bm p,\bm\theta_1,\bm\theta_2)$, onde $\bm\theta_1=(\bm\mu,\bm\sigma^2)$ e $\bm\theta_2=\bm\nu$. Assim, temos que a função $Q$ também pode ser subdividida como:
 
 $$
 Q(\bm \Psi|\bm{\Psi\k{k}})=Q_1(\bm p|\bm{\Psi\k{k}})+Q_2(\bm\theta_1|\bm{\Psi\k{k}})+Q_3(\bm\theta_2|\bm{\Psi\k{k}}),
@@ -254,26 +258,203 @@ $$
 onde:
 
 $$
-\begin{aligned}
-Q_1(\bm p|\bm{\Psi\k{k}})&=\sum^n_{i=1}\sum^g_{j=1}\hat z_{ij}p_{j}
-\\
-Q_2(\bm\theta_1|\bm{\Psi\k{k}})&=
-\end{aligned}
+Q_1(\bm p|\bm{\Psi\k{k}})=\sum^n_{i=1}\sum^g_{j=1}\hat z_{ij}p_{j}
 $$
-O algoritmo é:
+
+$$
+Q_2(\bm\theta_1|\bm{\Psi\k{k}})=
+\frac{1}{2}\sum^n_{i=1}\sum^g_{j=1}\hat z_{ij}\left\{
+  \log(2\pi)-\sum^g_{k=1}\log(\sigma_k^2)+\log\hat u_{ij}\k{k}-\hat u_{ij}\sum^g_{k=1}d^2_{Mi}(y_i,\mu_k,\sigma^2_k)\right\}
+$$
+$$
+Q_3(\bm\theta_2|\bm{\Psi\k{k}})=\sum^n_{i=1}\sum^g_{j=1}\hat z_{ij}\left\{
+  -\log\Gamma(\nu_j/2) 
+  + \frac{\nu_j}{2}
+  \left[
+      \log(\nu_j/2)+\sum^n_{i=1}\left(
+          \log(\hat u_{ij}\k{k}) - \hat u_{ij}\k{k}
+        \right)+
+        \psi\left(\frac{\nu_j\k{k}+1}{2}\right)-
+        \log\left(\frac{\nu_j\k{k}+1}{2}\right)
+  \right]
+\right\}
+$$
+
+Onde $d_{Mi}^2(y_i,\mu,\sigma^2)=\frac{(y_i-\mu)^2}{\sigma^2}$.
+
+O algoritmo, então, é:
 
 ::: {.callout-note}
 1) **Passo E**: Calcula-se:
 $$
-\hat z_{ij}=\frac{p_{j}\k{k} f_j(y_i|\mu_j\k{k}, {\sigma_j^2}\k{k}, \nu_j\k{k})}{\sum^g_{h=1} p_h\k{k}f_h(y_i|\mu_j\k{k},{\sigma_j^2}\k{k},\nu_j\k{k})},\quad i=1,...,n\quad j=1,...,g;
+\hat z_{ij}\k{k}=\frac{p_{j}\k{k} f_j(y_i|\mu_j\k{k}, {\sigma_j^2}\k{k}, \nu_j\k{k})}{\sum^g_{h=1} p_h\k{k}f_h(y_i|\mu_j\k{k},{\sigma_j^2}\k{k},\nu_j\k{k})},\quad i=1,...,n\quad j=1,...,g;
 $$
 $$
-\hat u_{ij}^{(k)}=\frac{\hat\nu^{(k)}+1}{\hat\nu^{(k)}+d^2_{Mij}(y_i,\mu_j\k k,{\sigma_j^2}\k k)},\quad i=1,2,...,n.
+\hat u_{ij}\k{k}=\frac{\hat\nu^{(k)}+1}{\hat\nu^{(k)}+d^2_{Mij}(y_i,\mu_j\k k,{\sigma_j^2}\k k)},\quad i=1,2,...,n.
 $$
 
-2) **Passo CM-1**: Obtém-se $\bm\theta_1\k{k+1}$ maximizando $Q(\bm\Psi|\bm\Psi\k{k})$ com $\bm\theta_2$ fixado, ou seja, com $\bm\nu=\bm\nu\k{k}$.
+2) **Passo CM-1**: Obtém-se $\bm\theta_1\k{k+1}$ maximizando $Q(\bm\Psi|\bm\Psi\k{k})$ com $\bm\theta_2$ fixado ($\bm\nu=\bm\nu\k{k}$). Ou seja, maximiza-se  $Q_2(\bm\theta_1|\bm{\Psi\k{k}})$.
 
-3 **Passo CM-1**: Obtém-se $\bm\theta_2\k{k+1}$ maximizando $Q(\bm\Psi|\bm\Psi\k{k})$ com $\bm\theta_1=\bm\theta_1\k{k+1}$ fixado.
+3) **Passo CM-1**: Obtém-se $\bm\theta_2\k{k+1}$ maximizando $Q(\bm\Psi|\bm\Psi\k{k})$ com $\bm\theta_1=\bm\theta_1\k{k+1}$ fixado. Ou seja, maximiza-se  $Q_3(\bm\theta_2|\bm{\Psi\k{k}})$.
 
-3) Verifica-se se o critério de parada. Caso seja falso, retorna-se ao passo 1.
+4) Verifica-se se o critério de parada. Caso seja falso, retorna-se ao passo 1.
 :::
+
+#### Simulação
+
+Simularemos uma amostra de mistura t de 3 componentes com os parâmetros abaixo:
+
+```{r}
+mu <- c(-30,30,40)
+sigma <- c(2,3,6)
+nu <- c(7,3,4)
+p <- c(0.2,0.5,0.3)
+
+rMisturaT <- function(n,mu,sig,nu,probs){
+  k<- length(mu)
+  X<- numeric(n)
+  U <- runif(n)
+  p <- cumsum(c(0,probs))
+  for(i in 1:k){
+    caso <- U <= p[i+1] & U> p[i]
+    tam <- sum(caso)
+    X[caso] <- rt(tam,nu)*sig[i] + mu[i]
+  }
+  return(X)
+}
+y <- rMisturaT(300,mu,sigma,nu,p)
+
+compT <- function(x,mu,sigma,nu)
+  dt((x-mu)/sigma,nu)
+
+dMistT <- function(x,mu,sigma,nu,p){
+  f <- 0
+  for(i in seq_along(mu))
+    f <- f + compT(x,mu[i],sigma[i],nu[i])*p[i]
+  return(f)
+}
+
+crit <- function(ll,mu,sig,nu,p){
+  ll2 <- l(mu,sig,nu,p)
+  abs(ll2-ll)/(abs(ll) + 1e-8) > 1e-7
+}
+
+l <- function(mu,sigma,nu,p)
+  sum(log(dMistT(y,mu,sigma,nu,p)))
+```
+
+```{r}
+Q1 <- function(mu,sig,nu,p){
+  z*p
+}
+
+Q2 <- function(pr,z,u){#proporcionalmente
+  mu=pr[1:3]
+  sig=pr[4:6]
+  -sum(z*(-log(sig)-u*sum((y-mu)^2/sig)))
+}
+
+Q3 <- function(nu,z,u){
+  w <- -lgamma(nu/2)+nu/2*(log(nu/2)+colSums(log(u)-u)+digamma((nu+1)/2)-log((nu+1)/2))
+  -sum(z*(w))
+}
+
+ECM <- function(mu,sig,nu,p){
+  cont<-1
+  l1<-100
+  z <- 1
+  while(crit(l1,mu,sig,nu,p)&cont<2){
+    #--------PASSO E--------#
+    z <- sapply(y,function(y){
+      sapply(1:length(p),function(j) p[j]*compT(y,mu[j],sig[j],nu[j])/dMistT(y,mu,sig,nu,p))
+    })
+    u <- sapply(y,function(y){
+      (nu+1)/(nu+(y-mu)^2/sig)
+    })
+    #-----------------------#
+    l1<- l(mu,sig,nu,p)
+    #--------PASSO CM1--------#
+    p <- apply(z,1,mean)
+    theta1 <- optim(rbind(mu,sig),Q2,z=z,u=u)$par
+    mu <- theta1[1:3]
+    sig <- theta1[4:6]
+    #--------PASSO CM2--------#
+    nu <- optim(nu,Q3,z=z,u=u)$par
+    #-----------------------#
+    cont<-cont+1
+  }
+  return(cbind(p,mu,sig,nu))
+}
+ECM(c(10,10,10),sigma,nu,p)
+
+# # Simple Univariate t-mixture ECM Algorithm(GEMINI AI, FOR REFERENCE ONLY)
+# library(stats)
+# 
+# # Generate synthetic data
+# set.seed(123)
+# n <- 300
+# true_mu <- c(-2, 2)
+# true_var <- c(1, 0.5)
+# true_nu <- c(4, 3)
+# true_pi <- c(0.4, 0.6)
+# 
+# y <- c(rt(n * true_pi[1], df = true_nu[1]) * sqrt(true_var[1]) + true_mu[1],
+#        rt(n * true_pi[2], df = true_nu[2]) * sqrt(true_var[2]) + true_mu[2])
+# 
+# # ECM Parameters
+# k <- 2
+# max_iter <- 100
+# tol <- 1e-6
+# 
+# # Initializations
+# pi <- c(0.5, 0.5)
+# mu <- quantile(y, c(0.25, 0.75))
+# var <- c(var(y), var(y))
+# nu <- c(5, 5)
+# 
+# for (iter in 1:max_iter) {
+#   # --- E-Step ---
+#   densities <- sapply(1:k, function(j) dt((y - mu[j]) / sqrt(var[j]), df = nu[j]) / sqrt(var[j]))
+#   weighted_dens <- t(pi * t(densities))
+#   posterior <- weighted_dens / rowSums(weighted_dens)
+#   
+#   # Latent weights (u_ij) for t-distribution
+#   # delta_ij = (y_i - mu_j)^2 / var_j
+#   u <- matrix(0, n, k)
+#   for (j in 1:k) {
+#     delta <- (y - mu[j])^2 / var[j]
+#     u[, j] <- (nu[j] + 1) / (nu[j] + delta)
+#   }
+#   
+#   # --- CM-Step 1 ---
+#   new_pi <- colMeans(posterior)
+#   new_mu <- colSums(posterior * u * y) / colSums(posterior * u)
+#   new_var <- colSums(posterior * u * (y - rep(new_mu, each = n))^2) / colSums(posterior)
+#   
+#   # --- CM-Step 2: Update Degrees of Freedom (nu) ---
+#   new_nu <- nu
+#   for (j in 1:k) {
+#     # Objective function: log-likelihood for nu
+#     loglik_nu <- function(v) {
+#       if (v <= 0) return(1e10)
+#       # Simplified log-likelihood part for nu
+#       sum(posterior[, j] * (0.5 * log(v/2) + lgamma(v/2) - 
+#                             lgamma((v+1)/2) + 0.5 * u[, j] * ( (v+1)/(v + (y-new_mu[j])^2/new_var[j]) ) ) ) # Incorrect loglik in snippet, placeholder logic
+#       # Actual formula required: (v/2)log(v/2) - log(Gamma(v/2)) + (v/2-1)E[log u] - (v/2)E[u]
+#     }
+#     # For simplicity, using numerical optimization (requires correct log-likelihood)
+#     # new_nu[j] <- optim(par = nu[j], fn = loglik_nu, method = "Brent", lower = 2.1, upper = 100)$par
+#   }
+#   
+#   # Check convergence
+#   if (sum(abs(new_mu - mu)) < tol) break
+#   mu <- new_mu
+#   var <- new_var
+#   pi <- new_pi
+#   nu <- new_nu
+# }
+# 
+# print(list(mu=mu, var=var, pi=pi, nu=nu))
+
+```
+
